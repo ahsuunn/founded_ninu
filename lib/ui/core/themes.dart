@@ -10,8 +10,6 @@ final ColorScheme colorScheme = ColorScheme(
   onTertiary: Colors.black,
   error: Colors.redAccent,
   onError: Colors.white,
-  background: Colors.white,
-  onBackground: Colors.black,
-  surface: Colors.white,
+  surface: Color(0xFFF4F2E3),
   onSurface: Colors.black,
 );
