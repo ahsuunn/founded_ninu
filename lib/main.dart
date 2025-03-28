@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.latoTextTheme().copyWith(
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         colorScheme: colorScheme,
       ),
-      home: const HomePage(userName: 'Ahsan'),
+      routerConfig: router,
     );
   }
 }
