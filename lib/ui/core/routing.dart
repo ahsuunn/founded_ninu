@@ -9,16 +9,8 @@ import 'package:founded_ninu/ui/features/profile/profile_view.dart';
 import 'package:founded_ninu/ui/features/sirine/sirine_view.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: "/",
+  initialLocation: "/home/Ahsan", // Change initial location to match ShellRoute
   routes: [
-    GoRoute(
-      path: "/",
-      builder: (context, state) {
-        // final username = state.pathParameters['username'] ?? "Guest";
-        final username = "Ahsan";
-        return HomePage(userName: username);
-      },
-    ),
     GoRoute(
       name: "signin",
       path: "/signin",
@@ -49,7 +41,8 @@ final GoRouter router = GoRouter(
           name: "home",
           path: "/home/:username",
           builder: (context, state) {
-            final username = state.pathParameters['username'] ?? "Guest";
+            final username = "Ahsan";
+            // final username = state.pathParameters['username'] ?? "Guest";
             return HomePage(userName: username);
           },
         ),
