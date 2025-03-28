@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:founded_ninu/ui/core/bottomNavBar.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:go_router/go_router.dart';

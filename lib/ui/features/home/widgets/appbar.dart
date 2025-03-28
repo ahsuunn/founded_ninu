@@ -1,98 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:founded_ninu/ui/core/themes.dart';
 
-class MyAppBar extends StatefulWidget {
-  const MyAppBar({super.key, required this.userName});
+class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String userName;
+  final bool showBackButton;
+  final String currentPage; // New: Identify current page
+
+  const MyAppBar({
+    Key? key,
+    required this.userName,
+    this.showBackButton = false,
+    required this.currentPage, // Pass current page
+  }) : super(key: key);
 
   @override
-  State<MyAppBar> createState() => _MyAppBarState();
+  _MyAppBarState createState() => _MyAppBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
 class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(75),
-      child: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        actions: [
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    final bool isManualPage = widget.currentPage == "manual";
+
+    return AppBar(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      leading:
+          isManualPage
+              ? IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+              : null,
+      title:
+          isManualPage
+              ? null
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
                       children: [
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: "Hi, "),
-                              TextSpan(
-                                text: widget.userName,
-                                style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                        TextSpan(
+                          text: "Hi, ",
+                          style: GoogleFonts.lato(fontSize: 16),
+                        ),
+                        TextSpan(
+                          text: widget.userName,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
-                        Text("We're here to help you"),
                       ],
                     ),
                   ),
-                  Flexible(
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            iconColor: colorScheme.tertiary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            print("Pressed");
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.book),
-                              Text(
-                                "Manual",
-                                style: TextStyle(color: colorScheme.tertiary),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            iconColor: colorScheme.tertiary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            print("Pressed");
-                          },
-                          child: Icon(Icons.notifications_active),
-                        ),
-                      ],
-                    ),
+                  Text(
+                    "We're here to help you!",
+                    style: GoogleFonts.lato(fontSize: 16),
                   ),
                 ],
               ),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                isManualPage
+                    ? Theme.of(context).colorScheme.primary.withOpacity(
+                      0.5,
+                    ) // Darker
+                    : Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
-        ],
-      ),
+          onPressed: isManualPage ? null : () => context.pushNamed("manual"),
+          child: Row(
+            children: [
+              Icon(Icons.book, color: Theme.of(context).colorScheme.tertiary),
+              Text(
+                "Manual",
+                style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onPressed: () {
+            print("Pressed");
+          },
+          child: Icon(
+            Icons.notifications_active,
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
+        ),
+        const SizedBox(width: 8),
+      ],
     );
   }
 }

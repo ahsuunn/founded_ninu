@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
