@@ -15,7 +15,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.latoTextTheme(),
+        textTheme: GoogleFonts.latoTextTheme().copyWith(
+          headlineLarge: GoogleFonts.lato(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.tertiary,
+          ),
+        ),
         colorScheme: colorScheme,
       ),
       home: const HomePage(userName: 'Ahsan'),
