@@ -4,13 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String userName;
-  final bool showBackButton;
   final String currentPage; // New: Identify current page
 
   const MyAppBar({
     super.key,
     required this.userName,
-    this.showBackButton = false,
     required this.currentPage, // Pass current page
   });
 
