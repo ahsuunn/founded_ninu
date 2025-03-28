@@ -12,40 +12,48 @@ class BottomNavBar extends StatelessWidget {
       bottomNavigationBar: Container(
         color: Colors.white,
         padding: EdgeInsets.all(8),
-        child: BottomNavigationBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
           ),
-          currentIndex: _getCurrentIndex(context),
-          onTap: (index) {
-            final username =
-                GoRouterState.of(context).pathParameters['username'] ?? 'Ahsan';
-            switch (index) {
-              case 0:
-                context.go('/home/$username');
-                break;
-              case 1:
-                context.go('/messages');
-                break;
-              case 2:
-                context.go('/profile');
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.message_outlined),
-              label: 'Messages',
+          child: BottomNavigationBar(
+            elevation: 0,
+
+            backgroundColor: Colors.white,
+            selectedLabelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_2_outlined),
-              label: 'Profile',
-            ),
-          ],
+            currentIndex: _getCurrentIndex(context),
+            onTap: (index) {
+              final username =
+                  GoRouterState.of(context).pathParameters['username'] ??
+                  'Ahsan';
+              switch (index) {
+                case 0:
+                  context.go('/home/$username');
+                  break;
+                case 1:
+                  context.go('/messages');
+                  break;
+                case 2:
+                  context.go('/profile');
+                  break;
+              }
+            },
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.message_outlined),
+                label: 'Messages',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_2_outlined),
+                label: 'Profile',
+              ),
+            ],
+          ),
         ),
       ),
     );
