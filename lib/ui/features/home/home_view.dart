@@ -3,6 +3,7 @@ import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
 import 'package:founded_ninu/ui/features/home/widgets/medicalguide_list.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
+import 'package:founded_ninu/ui/features/home/widgets/videocall_container.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.userName});
@@ -124,7 +125,18 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(height: 10),
                         // Image(image: AssetImage("assets/fa.png")),
                         HorizontalList(),
-                        SizedBox(height: 20),
+                        SizedBox(height: 15),
+
+                        SubHeader(
+                          icon: Icon(
+                            Icons.video_call_outlined,
+                            color: colorScheme.tertiary, // Icon color
+                            size: 24,
+                          ),
+                          title: "Video Call Assistance",
+                        ),
+                        SizedBox(height: 10),
+                        VideocallContainer(),
 
                         // Add more widgets here
                       ],
