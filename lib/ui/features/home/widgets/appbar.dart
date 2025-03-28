@@ -8,20 +8,20 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String currentPage; // New: Identify current page
 
   const MyAppBar({
-    Key? key,
+    super.key,
     required this.userName,
     this.showBackButton = false,
     required this.currentPage, // Pass current page
-  }) : super(key: key);
+  });
 
   @override
-  _MyAppBarState createState() => _MyAppBarState();
+  MyAppBarState createState() => MyAppBarState();
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class _MyAppBarState extends State<MyAppBar> {
+class MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     final bool isManualPage = widget.currentPage == "manual";
@@ -69,8 +69,8 @@ class _MyAppBarState extends State<MyAppBar> {
           style: ElevatedButton.styleFrom(
             backgroundColor:
                 isManualPage
-                    ? Theme.of(context).colorScheme.primary.withOpacity(
-                      0.5,
+                    ? Theme.of(context).colorScheme.primary.withAlpha(
+                      125,
                     ) // Darker
                     : Theme.of(context).colorScheme.primary,
             shape: RoundedRectangleBorder(
@@ -97,7 +97,7 @@ class _MyAppBarState extends State<MyAppBar> {
             ),
           ),
           onPressed: () {
-            print("Pressed");
+            null;
           },
           child: Icon(
             Icons.notifications_active,

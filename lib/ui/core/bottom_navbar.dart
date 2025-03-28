@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 class BottomNavBar extends StatelessWidget {
   final Widget child;
-  const BottomNavBar({required this.child, Key? key}) : super(key: key);
+  const BottomNavBar({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

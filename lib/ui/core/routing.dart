@@ -1,4 +1,4 @@
-import 'package:founded_ninu/ui/core/bottomNavBar.dart';
+import 'package:founded_ninu/ui/core/bottom_navbar.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
