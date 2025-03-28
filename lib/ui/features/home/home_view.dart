@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
+import 'package:founded_ninu/ui/features/home/widgets/medicalguide_list.dart';
+import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.userName});
@@ -34,39 +36,24 @@ class _HomePageState extends State<HomePage> {
                   topRight: Radius.circular(30),
                 ),
                 child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
                   child: Padding(
                     padding: EdgeInsets.all(24), // Padding inside the body
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(
-                                4,
-                              ), // Padding around the icon
-                              decoration: BoxDecoration(
-                                color:
-                                    colorScheme
-                                        .secondary, // Background color of the box
-                                shape: BoxShape.circle, // Makes it a circle
-                              ),
-                              child: Icon(
-                                Icons.map_outlined,
-                                color: colorScheme.tertiary, // Icon color
-                                size: 24,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              "Find Hospital",
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                          ],
+                        SubHeader(
+                          icon: Icon(
+                            Icons.map_outlined,
+                            color: colorScheme.tertiary, // Icon color
+                            size: 24,
+                          ),
+                          title: "Find Hospital",
                         ),
 
                         SizedBox(height: 10),
 
+                        // MAP
                         Container(
                           width: double.infinity,
                           height: 175,
@@ -124,6 +111,21 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 20),
+                        //First Aid Guide
+                        SubHeader(
+                          icon: Icon(
+                            Icons.medical_services_outlined,
+                            color: colorScheme.tertiary, // Icon color
+                            size: 24,
+                          ),
+                          title: "First Aid Guide",
+                        ),
+                        SizedBox(height: 10),
+                        // Image(image: AssetImage("assets/fa.png")),
+                        HorizontalList(),
+                        SizedBox(height: 20),
+
                         // Add more widgets here
                       ],
                     ),
