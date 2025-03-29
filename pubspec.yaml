@@ -39,7 +39,6 @@ dependencies:
   cloud_firestore: ^5.6.5
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
-  riverpod: ^2.6.1
   flutter_riverpod: ^2.6.1
 
 dev_dependencies:
@@ -69,6 +68,9 @@ flutter:
     - assets/fa.png
     - assets/fa1.png
     - assets/assistance.png
+    - assets/ninu.svg
+    - assets/logo.png
+    - assets/logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -92,6 +94,13 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+  fonts:
+    - family: DinNextW1G
+      fonts:
+      - asset : assets/fonts/dinnextw1g.otf
+      - asset : assets/fonts/dinnextw1g_black.otf
+      - asset : assets/fonts/dinnextw1g_blackitalic.otf
+      - asset : assets/fonts/dinnextw1g_bold.otf
+    
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
