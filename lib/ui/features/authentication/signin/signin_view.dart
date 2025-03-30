@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/auth_provider.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:founded_ninu/ui/features/authentication/signin/widgets/LabeledTextField.dart';
+import 'package:founded_ninu/ui/features/authentication/widgets/LabeledTextField.dart';
+import 'package:founded_ninu/ui/features/authentication/widgets/rowlogo.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,26 +25,11 @@ class SigninPage extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Image.asset("assets/logo.png"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          "NINU",
-                          style: TextStyle(
-                            fontFamily: 'DinNextW1G',
-                            fontSize: 82,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Rowlogo(
+                    logoHeight: 100,
+                    logoWidth: 100,
+                    fontSize: 82,
+                    textTopPadding: 10,
                   ),
                   Text(
                     "Sign in to your account",
@@ -56,14 +42,14 @@ class SigninPage extends ConsumerWidget {
                   LabeledTextField(
                     width: textFieldWidth,
                     label: "Email",
-                    hintText: "Enter your email",
+                    hintText: "Masukkan email anda",
                     controller: emailController,
                   ),
                   const SizedBox(height: 12),
                   LabeledTextField(
                     width: textFieldWidth,
                     label: "Password",
-                    hintText: "Enter your password",
+                    hintText: "Masukkan kata sandi",
                     controller: passwordController,
                     isPassword: true,
                   ),
@@ -109,7 +95,7 @@ class SigninPage extends ConsumerWidget {
                         style: TextStyle(fontSize: 16),
                       ),
                       GestureDetector(
-                        onTap: () => context.goNamed('signup'),
+                        onTap: () => context.goNamed('signup1'),
                         child: Text(
                           "Daftar",
                           style: TextStyle(
