@@ -1,5 +1,6 @@
 import 'package:founded_ninu/ui/core/bottom_navbar.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_2.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/signup_view_3.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
@@ -30,7 +31,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: "signup3",
       path: "/signup3",
-      builder: (context, state) => FirstSignupPage(),
+      builder: (context, state) => ThirdSignupPage(),
     ),
     GoRoute(
       name: "manual",

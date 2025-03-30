@@ -22,153 +22,152 @@ class FirstSignupPage extends ConsumerWidget {
         TextEditingController();
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Rowlogo(
-                      logoHeight: 100,
-                      logoWidth: 100,
-                      fontSize: 82,
-                      textTopPadding: 10,
-                    ),
-                    Text(
-                      "Create your account",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
-                    SignupTextfield(
-                      label: "Username",
-                      width: textFieldWidth,
-                      hintText: "Masukkan username anda",
-                      controller: usernameController,
-                      onChanged:
-                          (value) => ref
-                              .read(signupProvider.notifier)
-                              .updateUsername(value),
-                    ),
-                    SignupTextfield(
-                      label: "Email",
-                      width: textFieldWidth,
-                      hintText: "Masukkan Email anda",
-                      controller: emailController,
-                      onChanged:
-                          (value) => ref
-                              .read(signupProvider.notifier)
-                              .updateEmail(value),
-                    ),
-                    PhonenumberTextfield(
-                      label: "No Telp",
-                      width: textFieldWidth,
-                      hintText: "8xxxxxxxxxx",
-                      controller: phoneController,
-                      onChanged:
-                          (value) => ref
-                              .read(signupProvider.notifier)
-                              .updatePhone(value),
-                    ),
-                    SignupTextfield(
-                      label: "Kata sandi",
-                      isPassword: true,
-                      width: textFieldWidth,
-                      hintText: "Masukkan kata sandi",
-                      controller: passwordController,
-                      onChanged:
-                          (value) => ref
-                              .read(signupProvider.notifier)
-                              .updatePhone(value),
-                    ),
-                    SignupTextfield(
-                      label: "Konfirmasi ulang kata sandi",
-                      isPassword: true,
-                      width: textFieldWidth,
-                      hintText: "Masukkan kata sandi",
-                      controller: confirmPasswordController,
-                      onChanged:
-                          (value) => ref
-                              .read(signupProvider.notifier)
-                              .updatePhone(value),
-                    ),
-                    SizedBox(
-                      width: textFieldWidth,
-                      height: 50,
-                      child: Row(
-                        children: [
-                          MyCheckbox(),
-                          Expanded(
-                            child: Text(
-                              "Saya telah membaca dan menyetujui Ketentuan Umum dan Kebijakan Privasi",
-                              softWrap: true,
-                              maxLines: 2,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: textFieldWidth,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          backgroundColor: colorScheme.primary,
-                        ),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height:
+              MediaQuery.of(context).size.height, // Takes full screen height
 
-                        onPressed: () {
-                          // bool success = await authService.signIn(
-                          //   emailController.text,
-                          //   passwordController.text,
-                          // );
-
-                          if (context.mounted) {
-                            context.goNamed('signup2');
-                          }
-                        },
-                        child: Text(
-                          "Buat Akun",
-                          style: TextStyle(
-                            color: colorScheme.tertiary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 14.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Rowlogo(
+                    logoHeight: 100,
+                    logoWidth: 100,
+                    fontSize: 82,
+                    textTopPadding: 10,
+                  ),
+                  Text(
+                    "Create your account",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
+                  SignupTextfield(
+                    label: "Username",
+                    width: textFieldWidth,
+                    hintText: "Masukkan username anda",
+                    controller: usernameController,
+                    onChanged:
+                        (value) => ref
+                            .read(signupProvider.notifier)
+                            .updateUsername(value),
+                  ),
+                  SignupTextfield(
+                    label: "Email",
+                    width: textFieldWidth,
+                    hintText: "Masukkan Email anda",
+                    controller: emailController,
+                    onChanged:
+                        (value) => ref
+                            .read(signupProvider.notifier)
+                            .updateEmail(value),
+                  ),
+                  PhonenumberTextfield(
+                    label: "No Telp",
+                    width: textFieldWidth,
+                    hintText: "8xxxxxxxxxx",
+                    controller: phoneController,
+                    onChanged:
+                        (value) => ref
+                            .read(signupProvider.notifier)
+                            .updatePhone(value),
+                  ),
+                  SignupTextfield(
+                    label: "Kata sandi",
+                    isPassword: true,
+                    width: textFieldWidth,
+                    hintText: "Masukkan kata sandi",
+                    controller: passwordController,
+                    onChanged:
+                        (value) => ref
+                            .read(signupProvider.notifier)
+                            .updatePhone(value),
+                  ),
+                  SignupTextfield(
+                    label: "Konfirmasi ulang kata sandi",
+                    isPassword: true,
+                    width: textFieldWidth,
+                    hintText: "Masukkan kata sandi",
+                    controller: confirmPasswordController,
+                    onChanged:
+                        (value) => ref
+                            .read(signupProvider.notifier)
+                            .updatePhone(value),
+                  ),
+                  SizedBox(
+                    width: textFieldWidth,
+                    height: 50,
+                    child: Row(
                       children: [
-                        Text(
-                          "Sudah punya akun? ",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        GestureDetector(
-                          onTap: () => context.goNamed('signin'),
+                        MyCheckbox(),
+                        Expanded(
                           child: Text(
-                            "Sign in",
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontSize: 16,
-                            ),
+                            "Saya telah membaca dan menyetujui Ketentuan Umum dan Kebijakan Privasi",
+                            softWrap: true,
+                            maxLines: 2,
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    width: textFieldWidth,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: colorScheme.primary,
+                      ),
+
+                      onPressed: () {
+                        // bool success = await authService.signIn(
+                        //   emailController.text,
+                        //   passwordController.text,
+                        // );
+
+                        if (context.mounted) {
+                          context.pushNamed('signup2');
+                        }
+                      },
+                      child: Text(
+                        "Buat Akun",
+                        style: TextStyle(
+                          color: colorScheme.tertiary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sudah punya akun? ",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.goNamed('signin'),
+                        child: Text(
+                          "Sign in",
+                          style: TextStyle(
+                            color: colorScheme.primary,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
