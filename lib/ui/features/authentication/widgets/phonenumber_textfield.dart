@@ -39,7 +39,7 @@ class PhonenumberTextfield extends StatelessWidget {
             children: [
               Container(
                 width: width * 0.2,
-                height: double.infinity, // Set height to match TextField
+                height: 50, // Set height to match TextField
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
@@ -51,31 +51,40 @@ class PhonenumberTextfield extends StatelessWidget {
                 ),
               ),
               Expanded(
-                // Makes the text field take up remaining space
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: TextField(
-                    onChanged: onChanged,
-                    controller: controller,
-                    obscureText: isPassword,
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFD9D9D9),
-                      hintText: hintText,
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Color(0x80D9D9D9)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: colorScheme.onTertiary),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 14,
-                      ),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Tolong masukkan $label";
+                    }
+                    if (value.runtimeType != int) {
+                      return "Tolong masukkan angka";
+                    }
+                    return null;
+                  },
+                  onChanged: onChanged,
+                  controller: controller,
+                  obscureText: isPassword,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFD9D9D9),
+                    hintText: hintText,
+                    border: const OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Color(0x80D9D9D9)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: colorScheme.onTertiary),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
                     ),
                   ),
                 ),

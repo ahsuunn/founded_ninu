@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/state/role_provider.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/state/provider.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/rolebutton.dart';
 import 'package:go_router/go_router.dart';
 

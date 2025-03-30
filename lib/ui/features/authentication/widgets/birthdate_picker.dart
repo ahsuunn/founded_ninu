@@ -4,11 +4,15 @@ import 'package:intl/intl.dart';
 class BirthDatePicker extends StatefulWidget {
   final DateTime? initialDate;
   final Function(DateTime) onDateSelected;
+  final FormFieldSetter<DateTime>? onSaved;
+  final FormFieldValidator<DateTime>? validator;
 
   const BirthDatePicker({
     super.key,
     this.initialDate,
     required this.onDateSelected,
+    this.onSaved,
+    this.validator,
   });
 
   @override
@@ -36,28 +40,56 @@ class _BirthDatePickerState extends State<BirthDatePicker> {
       setState(() {
         selectedDate = pickedDate;
       });
-      widget.onDateSelected(pickedDate); // Pass the selected date
+      widget.onDateSelected(pickedDate);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _pickDate(context),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          selectedDate != null
-              ? DateFormat('dd MMM yyyy').format(selectedDate!)
-              : "Select Birthdate",
-          style: TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-      ),
+    return FormField<DateTime>(
+      validator: widget.validator,
+      onSaved: widget.onSaved,
+      builder: (FormFieldState<DateTime> state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () => _pickDate(context),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFD9D9D9),
+                    border: Border.all(
+                      color: state.hasError ? Colors.red : Colors.transparent,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    selectedDate != null
+                        ? DateFormat('dd MMM yyyy').format(selectedDate!)
+                        : "Select Birthdate",
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ),
+              ),
+              if (state.hasError) // Show error message
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 10),
+                  child: Text(
+                    state.errorText ?? '',
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

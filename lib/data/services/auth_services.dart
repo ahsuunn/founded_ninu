@@ -15,7 +15,6 @@ class AuthService {
       );
       return true; // Success
     } catch (e) {
-      print("Sign up error: $e");
       return false; // Failure
     }
   }
@@ -26,7 +25,6 @@ class AuthService {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true; // Success
     } catch (e) {
-      print("Sign in error: $e");
       return false; // Failure
     }
   }

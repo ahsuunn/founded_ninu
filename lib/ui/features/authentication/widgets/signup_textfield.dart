@@ -9,6 +9,24 @@ class SignupTextfield extends StatelessWidget {
   final double width;
   final TextEditingController controller;
   final bool isPassword;
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Password tidak boleh kosong"; // "Password cannot be empty"
+    }
+    if (value.length < 8) {
+      return "Minimal 8 karakter"; // "At least 8 characters"
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return "Harus mengandung huruf kapital (A-Z)"; // "Must contain an uppercase letter"
+    }
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return "Harus mengandung huruf kecil (a-z)"; // "Must contain a lowercase letter"
+    }
+    if (!RegExp(r'\d').hasMatch(value)) {
+      return "Harus mengandung angka (0-9)"; // "Must contain a number"
+    }
+    return null; // ✅ Valid password
+  }
 
   const SignupTextfield({
     super.key,
@@ -35,7 +53,16 @@ class SignupTextfield extends StatelessWidget {
         const SizedBox(height: 5),
         SizedBox(
           width: width,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Tolong masukkan $label";
+              }
+              if (isPassword) {
+                validatePassword(value);
+              }
+              return null;
+            },
             onChanged: onChanged,
             controller: controller,
             obscureText: isPassword,
@@ -52,6 +79,10 @@ class SignupTextfield extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: colorScheme.onTertiary),
                 borderRadius: BorderRadius.circular(10),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+                borderRadius: BorderRadius.circular(12),
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 10,

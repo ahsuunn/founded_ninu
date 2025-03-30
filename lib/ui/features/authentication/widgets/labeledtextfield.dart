@@ -32,7 +32,13 @@ class LabeledTextField extends StatelessWidget {
         const SizedBox(height: 5),
         SizedBox(
           width: width,
-          child: TextField(
+          child: TextFormField(
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Tolong masukkan $label";
+              }
+              return null;
+            },
             controller: controller,
             obscureText: isPassword,
             cursorColor: Colors.black,
@@ -48,6 +54,10 @@ class LabeledTextField extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: colorScheme.onTertiary),
                 borderRadius: BorderRadius.circular(10),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+                borderRadius: BorderRadius.circular(12),
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 10,

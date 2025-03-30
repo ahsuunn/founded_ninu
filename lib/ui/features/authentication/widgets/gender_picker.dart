@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 enum Gender { laki, perempuan }
 
 class GenderPicker extends StatefulWidget {
-  const GenderPicker({super.key});
+  final Function(Gender) onGenderSelected;
+
+  const GenderPicker({super.key, required this.onGenderSelected});
 
   @override
   State<GenderPicker> createState() => GenderPickerState();
@@ -22,9 +24,12 @@ class GenderPickerState extends State<GenderPicker> {
               value: Gender.laki,
               groupValue: _gender,
               onChanged: (Gender? value) {
-                setState(() {
-                  _gender = value;
-                });
+                if (value != null) {
+                  setState(() {
+                    _gender = value;
+                  });
+                  widget.onGenderSelected(value); // Send selected value
+                }
               },
             ),
             Text('Laki-laki', style: TextStyle(fontSize: 16)),
@@ -36,9 +41,12 @@ class GenderPickerState extends State<GenderPicker> {
               value: Gender.perempuan,
               groupValue: _gender,
               onChanged: (Gender? value) {
-                setState(() {
-                  _gender = value;
-                });
+                if (value != null) {
+                  setState(() {
+                    _gender = value;
+                  });
+                  widget.onGenderSelected(value); // Send selected value
+                }
               },
             ),
             Text('Perempuan', style: TextStyle(fontSize: 16)),

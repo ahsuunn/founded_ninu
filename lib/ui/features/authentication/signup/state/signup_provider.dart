@@ -1,8 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'signup_state.dart';
 
 class SignupNotifier extends StateNotifier<SignupState> {
   SignupNotifier() : super(SignupState());
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Method to register the user
+  Future<String?> signUp() async {
+    try {
+      // Create user with email and password in Firebase Authentication
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
+            email: state.email,
+            password: state.password,
+          );
+
+      // Store additional user data in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'username': state.username,
+        'email': state.email,
+        'phone': state.phone,
+        'role': state.role,
+        'fullName': state.fullName,
+        'dob': state.dob,
+        'gender': state.gender,
+        'ktp': state.ktp,
+        'medicalHistory': state.medicalHistory,
+        'hospitalInstance': state.hospitalInstance,
+      });
+
+      return null; // No error, sign-up successful
+    } on FirebaseAuthException catch (e) {
+      return e.message; // Return error message
+    } catch (e) {
+      return "An unexpected error occurred";
+    }
+  }
 
   void updateUsername(String username) {
     state = state.copyWith(username: username);
