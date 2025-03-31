@@ -1,24 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
 import 'package:founded_ninu/ui/features/home/widgets/medicalguide_list.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 import 'package:founded_ninu/ui/features/home/widgets/videocall_container.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userName});
-
-  final String userName;
+class HomePage extends ConsumerStatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String fullname = '';
+
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userProvider);
+
     return Scaffold(
-      appBar: MyAppBar(userName: "Ahsan", currentPage: "home"),
+      appBar: userAsync.when(
+        data:
+            (user) => MyAppBar(
+              userName: (user?.fullName ?? "No Name"),
+              currentPage: "home",
+            ),
+        loading: () => MyAppBar(userName: "", currentPage: "home"),
+        error: (err, stack) => MyAppBar(userName: "Error", currentPage: "home"),
+      ),
       body: Column(
         children: [
           SizedBox(height: 24),

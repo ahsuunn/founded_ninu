@@ -53,8 +53,7 @@ final GoRouter router = GoRouter(
           name: "home",
           path: "/home/:username",
           builder: (context, state) {
-            final username = state.pathParameters['username'] ?? "Guest";
-            return HomePage(userName: username);
+            return HomePage();
           },
         ),
         GoRoute(
