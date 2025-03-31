@@ -40,7 +40,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
   Widget build(BuildContext context) {
     final formKey = ref.watch(formKeyProvider); // Get the form key
     final selectedHospital = ref.watch(hospitalProvider);
-    final String? role = ref.watch(roleProvider);
+    final String role = ref.watch(signupProvider).role;
     bool submitForm() {
       if (formKey.currentState!.validate()) {
         return true;
@@ -183,16 +183,6 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                         // print(value.name);
                       },
                     ),
-                SignupTextfield(
-                  label: "Riwayat Penyaki",
-                  hintText: "Masukkan riwayat penyakit anda",
-                  width: textFieldWidth,
-                  controller: _medicalHistoryController,
-                  onChanged:
-                      (value) => ref
-                          .read(signupProvider.notifier)
-                          .updateMedicalHistory(value),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
