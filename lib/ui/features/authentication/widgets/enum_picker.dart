@@ -26,6 +26,7 @@ class EnumPicker<T> extends StatelessWidget {
                       title: Text(value.toString().split('.').last),
                       onTap: () {
                         onSelected(value);
+                        // print(value.toString().split('.').last);
                         Navigator.pop(context);
                       },
                     ),

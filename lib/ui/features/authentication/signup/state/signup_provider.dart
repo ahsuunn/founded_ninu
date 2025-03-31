@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/models/user_model.dart';
 import 'signup_state.dart';
 
 class SignupNotifier extends StateNotifier<SignupState> {
@@ -19,19 +20,25 @@ class SignupNotifier extends StateNotifier<SignupState> {
             password: state.password,
           );
 
-      // Store additional user data in Firestore
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'username': state.username,
-        'email': state.email,
-        'phone': state.phone,
-        'role': state.role,
-        'fullName': state.fullName,
-        'dob': state.dob,
-        'gender': state.gender,
-        'ktp': state.ktp,
-        'medicalHistory': state.medicalHistory,
-        'hospitalInstance': state.hospitalInstance,
-      });
+      Map<String, dynamic> userData =
+          UserModel(
+            uid: userCredential.user!.uid,
+            username: state.username,
+            email: state.email,
+            phoneNumber: state.phone,
+            role: state.role,
+            fullName: state.fullName,
+            dateOfBirth: state.dob, // Ensure this is a DateTime
+            gender: state.gender,
+            nik: state.ktp,
+            medicalHistory: state.medicalHistory,
+            hospitalInstance: state.hospitalInstance,
+          ).toMap();
+
+      await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(userData);
 
       return null; // No error, sign-up successful
     } on FirebaseAuthException catch (e) {
@@ -65,7 +72,7 @@ class SignupNotifier extends StateNotifier<SignupState> {
     state = state.copyWith(fullName: fullName);
   }
 
-  void updateDob(String dob) {
+  void updateDob(DateTime dob) {
     state = state.copyWith(dob: dob);
   }
 

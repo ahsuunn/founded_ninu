@@ -156,7 +156,7 @@ class _FirstSignupPageState extends ConsumerState<FirstSignupPage> {
                         ),
 
                         onPressed: () {
-                          if (context.mounted) {
+                          if (context.mounted && submitForm()) {
                             context.pushNamed('signup2');
                           }
                         },

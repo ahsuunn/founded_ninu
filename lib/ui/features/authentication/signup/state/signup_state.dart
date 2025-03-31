@@ -5,7 +5,7 @@ class SignupState {
   final String password;
   final String role;
   final String fullName;
-  final String dob;
+  final DateTime? dob;
   final String gender;
   final String ktp;
   final String medicalHistory;
@@ -18,7 +18,7 @@ class SignupState {
     this.password = '',
     this.role = '',
     this.fullName = '',
-    this.dob = '',
+    this.dob,
     this.gender = '',
     this.ktp = '',
     this.medicalHistory = '',
@@ -32,7 +32,7 @@ class SignupState {
     String? password,
     String? role,
     String? fullName,
-    String? dob,
+    DateTime? dob,
     String? gender,
     String? ktp,
     String? medicalHistory,

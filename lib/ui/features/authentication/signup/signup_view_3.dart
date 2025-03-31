@@ -41,7 +41,6 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
     final formKey = ref.watch(formKeyProvider); // Get the form key
     final selectedHospital = ref.watch(hospitalProvider);
     final String? role = ref.watch(roleProvider);
-    final username = ref.watch(signupProvider).username;
     bool submitForm() {
       if (formKey.currentState!.validate()) {
         return true;
@@ -121,6 +120,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                       ),
                       BirthDatePicker(
                         onDateSelected: (DateTime date) {
+                          ref.read(signupProvider.notifier).updateDob(date);
                           ref.read(birthdateProvider.notifier).state = date;
                         },
                       ),
@@ -175,9 +175,24 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                       selectedValue: selectedHospital,
                       values: Hospitals.values,
                       onSelected: (Hospitals value) {
+                        ref
+                            .read(signupProvider.notifier)
+                            .updateHospitalInstance(value.name);
                         ref.read(hospitalProvider.notifier).state = value;
+
+                        // print(value.name);
                       },
                     ),
+                SignupTextfield(
+                  label: "Riwayat Penyaki",
+                  hintText: "Masukkan riwayat penyakit anda",
+                  width: textFieldWidth,
+                  controller: _medicalHistoryController,
+                  onChanged:
+                      (value) => ref
+                          .read(signupProvider.notifier)
+                          .updateMedicalHistory(value),
+                ),
 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -194,10 +209,17 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
 
                       onPressed: () async {
                         if (submitForm()) {
-                          String username = ref.watch(signupProvider).email;
-                          String password = ref.watch(signupProvider).password;
-                          print(username);
-                          print(password);
+                          String username = ref.watch(signupProvider).username;
+                          // String password = ref.watch(signupProvider).password;
+                          // String gender = ref.watch(signupProvider).gender;
+                          // String hospital =
+                          //     ref.watch(signupProvider).hospitalInstance;
+                          // String role = ref.watch(signupProvider).role;
+                          // DateTime? bod = ref.watch(signupProvider).dob;
+                          // print(bod.toString());
+                          // print(gender);
+                          // print(hospital);
+                          // print(role);
 
                           final notifier = ref.read(signupProvider.notifier);
                           String? errorMessage = await notifier.signUp();

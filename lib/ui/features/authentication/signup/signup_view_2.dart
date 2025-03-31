@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/state/provider.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/state/signup_provider.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/rolebutton.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,7 +40,9 @@ class SecondSignupPage extends ConsumerWidget {
                     child: Rolebutton(
                       onPressed:
                           () => {
-                            ref.read(roleProvider.notifier).state = "Pasien",
+                            ref
+                                .read(signupProvider.notifier)
+                                .updateRole("Pasien"),
                             context.pushNamed("signup3"),
                           },
                       width: buttonWidth,
@@ -53,7 +55,9 @@ class SecondSignupPage extends ConsumerWidget {
                     child: Rolebutton(
                       onPressed:
                           () => {
-                            ref.read(roleProvider.notifier).state = "Medis",
+                            ref
+                                .read(signupProvider.notifier)
+                                .updateRole("Medis"),
                             context.pushNamed("signup3"),
                           },
                       width: buttonWidth,

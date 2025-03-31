@@ -56,9 +56,6 @@ class PhonenumberTextfield extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return "Tolong masukkan $label";
                     }
-                    if (value.runtimeType != int) {
-                      return "Tolong masukkan angka";
-                    }
                     return null;
                   },
                   onChanged: onChanged,
