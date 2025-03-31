@@ -1,8 +1,10 @@
 import 'package:founded_ninu/ui/core/bottom_navbar.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/signup_view_2.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/signup_view_3.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/signup_view.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/signup_view_1.dart';
 import 'package:founded_ninu/ui/features/manual/manual_view.dart';
 import 'package:founded_ninu/ui/features/messages/messages_view.dart';
 import 'package:founded_ninu/ui/features/profile/profile_view.dart';
@@ -17,9 +19,19 @@ final GoRouter router = GoRouter(
       builder: (context, state) => SigninPage(),
     ),
     GoRoute(
-      name: "signup",
-      path: "/signup",
-      builder: (context, state) => SignupPage(),
+      name: "signup1",
+      path: "/signup1",
+      builder: (context, state) => FirstSignupPage(),
+    ),
+    GoRoute(
+      name: "signup2",
+      path: "/signup2",
+      builder: (context, state) => SecondSignupPage(),
+    ),
+    GoRoute(
+      name: "signup3",
+      path: "/signup3",
+      builder: (context, state) => ThirdSignupPage(),
     ),
     GoRoute(
       name: "manual",
@@ -41,8 +53,7 @@ final GoRouter router = GoRouter(
           name: "home",
           path: "/home/:username",
           builder: (context, state) {
-            final username = state.pathParameters['username'] ?? "Guest";
-            return HomePage(userName: username);
+            return HomePage();
           },
         ),
         GoRoute(

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends ConsumerWidget {
   final Widget child;
   const BottomNavBar({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userProvider);
+
     return Scaffold(
       body: child, // The current page
       bottomNavigationBar: Container(
@@ -27,9 +31,14 @@ class BottomNavBar extends StatelessWidget {
             ),
             currentIndex: _getCurrentIndex(context),
             onTap: (index) {
-              final username =
-                  GoRouterState.of(context).pathParameters['username'] ??
-                  'Ahsan';
+              final username = userAsync.when(
+                data:
+                    (user) =>
+                        user?.username ??
+                        'Guest', // Use fetched username or default
+                loading: () => 'Loading...', // Placeholder while loading
+                error: (err, stack) => 'Error', // Handle error case
+              );
               switch (index) {
                 case 0:
                   context.go('/home/$username');
@@ -62,7 +71,7 @@ class BottomNavBar extends StatelessWidget {
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     final username =
-        GoRouterState.of(context).pathParameters['username'] ?? 'Ahsan';
+        GoRouterState.of(context).pathParameters['username'] ?? 'Guest';
 
     if (location == "/home/$username") return 0;
     if (location == "/messages") return 1;

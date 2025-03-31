@@ -16,9 +16,7 @@ class AuthChecker extends ConsumerWidget {
         if (!context.mounted) {
           return SizedBox.shrink(); // Prevent async gap issue
         }
-        return user == null
-            ? SigninPage()
-            : HomePage(userName: user.email ?? "User");
+        return user == null ? SigninPage() : HomePage();
       },
       loading: () => Center(child: CircularProgressIndicator()),
       error: (err, stack) => Center(child: Text("Error: $err")),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
@@ -24,7 +26,10 @@ class UserModel extends UserEntity {
       phoneNumber: map['phoneNumber'] ?? '',
       role: map['role'] ?? '',
       fullName: map['fullName'] ?? '',
-      dateOfBirth: map['dateOfBirth'] ?? '',
+      dateOfBirth:
+          map['dateOfBirth'] != null
+              ? (map['dateOfBirth'] as Timestamp).toDate()
+              : null,
       gender: map['gender'] ?? '',
       nik: map['nik'] ?? '',
       medicalHistory: map['medicalHistory'],
@@ -40,7 +45,8 @@ class UserModel extends UserEntity {
       "phoneNumber": phoneNumber,
       "role": role,
       "fullName": fullName,
-      "dateOfBirth": dateOfBirth,
+      "dateOfBirth":
+          dateOfBirth != null ? Timestamp.fromDate(dateOfBirth!) : null,
       "gender": gender,
       "nik": nik,
       "medicalHistory": medicalHistory,
