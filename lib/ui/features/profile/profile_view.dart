@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:founded_ninu/data/services/auth_services.dart';
+import 'package:founded_ninu/ui/features/profile/widgets/logout_button.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Profile")));
+    return Scaffold(
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [LogoutButton()],
+        ),
+      ),
+    );
   }
 }
