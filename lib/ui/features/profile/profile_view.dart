@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:founded_ninu/data/services/auth_services.dart';
 import 'package:founded_ninu/ui/features/profile/widgets/logout_button.dart';
 
 class ProfilePage extends StatelessWidget {
