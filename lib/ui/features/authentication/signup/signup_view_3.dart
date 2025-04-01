@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/core/default_pushpage_appbar.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/state/birthdate_provider.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/state/provider.dart';
@@ -51,22 +52,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
     final double textFieldWidth = MediaQuery.of(context).size.width * 0.75;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading:
-            false, // Prevents Flutter from adding the default back button
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0, top: 8),
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.black,
-              size: 28,
-            ),
-            onPressed: () => context.pop(), // Custom back button behavior
-          ),
-        ),
-      ),
-
+      appBar: DefaultPushpageAppbar(),
       body: SingleChildScrollView(
         child: Center(
           child: Form(

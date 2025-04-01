@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/core/default_pushpage_appbar.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/state/signup_provider.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/rolebutton.dart';
 import 'package:go_router/go_router.dart';
@@ -12,21 +13,7 @@ class SecondSignupPage extends ConsumerWidget {
     final double buttonWidth = MediaQuery.of(context).size.width * 0.75;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading:
-            false, // Prevents Flutter from adding the default back button
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0, top: 8),
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.black,
-              size: 28,
-            ),
-            onPressed: () => context.pop(), // Custom back button behavior
-          ),
-        ),
-      ),
+      appBar: DefaultPushpageAppbar(),
       body: Center(
         child: Column(
           children: [
