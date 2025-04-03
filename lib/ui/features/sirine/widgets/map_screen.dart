@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:founded_ninu/config/keys.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
+import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,18 +24,49 @@ class MapScreenState extends State<MapScreen> {
     -122.4194,
   ); // Default (San Francisco)
   List<LatLng> _routePoints = [];
+  Set<Marker> _markers = {};
   final String apiKey = AppKeys.mapsApiKey;
 
   @override
   void initState() {
     super.initState();
     _getUserLocation();
+    _fetchHospitals();
   }
 
   @override
   void dispose() {
     super.dispose();
     _mapController?.dispose();
+  }
+
+  Future<void> _fetchHospitals() async {
+    List<dynamic> hospitals = await GoogleMapsService().getNearbyHospitals(
+      _currentPosition.latitude,
+      _currentPosition.longitude,
+    );
+
+    Set<Marker> newMarkers = {}; // ✅ Temporary list to store markers
+
+    for (var hospital in hospitals) {
+      Marker hospitalMarker = Marker(
+        markerId: MarkerId(hospital['place_id']), // ✅ Unique ID for each marker
+        position: LatLng(
+          hospital['geometry']['location']['lat'],
+          hospital['geometry']['location']['lng'],
+        ),
+        infoWindow: InfoWindow(
+          // ✅ Show hospital name
+          title: hospital['name'],
+          snippet: hospital['vicinity'],
+        ),
+      );
+
+      newMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
+    }
+    setState(() {
+      _markers.addAll(newMarkers); // ✅ Update state with new markers
+    });
   }
 
   Future<void> _getUserLocation() async {
@@ -131,19 +163,15 @@ class MapScreenState extends State<MapScreen> {
                       ), // Default position until we get real location
               zoom: 14.0,
             ),
-            markers: {
-              if (_currentPosition.latitude != 0 ||
-                  _currentPosition.longitude != 0)
-                Marker(
-                  markerId: const MarkerId("currentLocation"),
-                  position: _currentPosition,
-                ),
-              if (_destination != _currentPosition)
-                Marker(
-                  markerId: const MarkerId("destination"),
-                  position: _destination,
-                ),
-            },
+            markers: _markers,
+            //  {
+            // if (_currentPosition.latitude != 0 ||
+            //     _currentPosition.longitude != 0)
+            //   Marker(
+            //     markerId: const MarkerId("currentLocation"),
+            //     position: _currentPosition,
+            //   ),
+            // },
             onMapCreated: (GoogleMapController controller) {
               _mapController = controller;
               // We have the controller, now get the location if we don't have it yet
@@ -170,6 +198,14 @@ class MapScreenState extends State<MapScreen> {
             child: FloatingActionButton(
               onPressed: _moveToCurrentLocation,
               child: const Icon(Icons.my_location),
+            ),
+          ),
+          Positioned(
+            bottom: 200,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: _fetchHospitals,
+              child: const Icon(Icons.local_hospital_rounded),
             ),
           ),
         ],

@@ -59,7 +59,7 @@ class SignupTextfield extends StatelessWidget {
                 return "Tolong masukkan $label";
               }
               if (isPassword) {
-                validatePassword(value);
+                return validatePassword(value);
               }
               return null;
             },
@@ -72,13 +72,17 @@ class SignupTextfield extends StatelessWidget {
               fillColor: Color(0xFFD9D9D9),
               hintText: hintText,
               border: OutlineInputBorder(),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0x80D9D9D9)),
+                borderRadius: BorderRadius.circular(12),
+              ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Color(0x80D9D9D9)),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: colorScheme.onTertiary),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red),
@@ -104,7 +108,6 @@ class SignupTextfield extends StatelessWidget {
               ),
             )
             : SizedBox(),
-        SizedBox(height: 10),
       ],
     );
   }

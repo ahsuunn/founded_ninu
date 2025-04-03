@@ -22,6 +22,11 @@ class GoogleMapsService {
 
       if (response.statusCode == 200) {
         print(response.data['results']);
+        for (var hospital in response.data['results']) {
+          print("🏥 Name: ${hospital['name']}");
+          print("📍 Address: ${hospital['vicinity']}");
+          print("---------");
+        }
         return response.data['results']; // List of hospitals
       } else {
         throw Exception('Failed to load hospitals');
