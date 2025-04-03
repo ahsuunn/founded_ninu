@@ -72,8 +72,8 @@ class MapSnippet extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 30,
-                          height: 30,
+                          width: 35,
+                          height: 35,
                           decoration: BoxDecoration(
                             color: colorScheme.primary,
                             borderRadius: BorderRadius.circular(10),
@@ -81,7 +81,7 @@ class MapSnippet extends ConsumerWidget {
                           child: Icon(
                             Icons.location_on_outlined,
                             color: Colors.white,
-                            size: 18,
+                            size: 22,
                           ),
                         ),
                         Padding(
