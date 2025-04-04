@@ -8,6 +8,8 @@ class DefaultPushpageAppbar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.transparent,
       automaticallyImplyLeading:
           false, // Prevents Flutter from adding the default back button
       leading: Padding(
