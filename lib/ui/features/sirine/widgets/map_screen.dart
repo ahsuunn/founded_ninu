@@ -5,6 +5,7 @@ import 'package:founded_ninu/data/services/map_services.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,12 +23,8 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   GoogleMapController? _mapController;
   LatLng _currentPosition = const LatLng(0, 0);
-  LatLng _destination = const LatLng(
-    37.7749,
-    -122.4194,
-  ); // Default (San Francisco)
-  List<LatLng> _routePoints = [];
   Set<Marker> markers = {};
+  Set<Marker> tempMarkers = {}; // ✅ Temporary list to store markers
   final String apiKey = AppKeys.mapsApiKey;
 
   @override
@@ -49,31 +46,35 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _currentPosition.longitude,
     );
 
-    Set<Marker> newMarkers = {}; // ✅ Temporary list to store markers
-
     for (var hospital in hospitals) {
       String hospitalName = hospital['name'] ?? "";
       if (MapUsecase().isHospital(hospitalName)) {
+        double hospitalLat = hospital['geometry']['location']['lat'];
+        double hospitalLng = hospital['geometry']['location']['lng'];
         print(hospitalName);
         Marker hospitalMarker = Marker(
           markerId: MarkerId(
             hospital['place_id'],
           ), // ✅ Unique ID for each marker
-          position: LatLng(
-            hospital['geometry']['location']['lat'],
-            hospital['geometry']['location']['lng'],
-          ),
+          position: LatLng(hospitalLat, hospitalLng),
           infoWindow: InfoWindow(
             // ✅ Show hospital name
             title: hospital['name'],
             snippet: hospital['vicinity'],
           ),
+          onTap:
+              () => {
+                ref.read(selectedDestinationProvider.notifier).state = LatLng(
+                  hospitalLat,
+                  hospitalLng,
+                ),
+              },
         );
-        newMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
+        tempMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
       }
     }
     setState(() {
-      markers.addAll(newMarkers); // ✅ Update state with new markers
+      markers.addAll(tempMarkers); // ✅ Update state with new markers
     });
   }
 
@@ -92,6 +93,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueAzure,
             ),
+            infoWindow: InfoWindow(title: "Your Current Location"),
           ),
         );
       });
@@ -123,41 +125,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
-  Future<void> _setDestination(LatLng newDestination) async {
-    setState(() {
-      _destination = newDestination;
-    });
-
-    await _drawRoute();
-  }
-
-  Future<void> _drawRoute() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    List<LatLng> route = [];
-
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey: AppKeys.mapsApiKey,
-      request: PolylineRequest(
-        origin: PointLatLng(
-          _currentPosition.latitude,
-          _currentPosition.longitude,
-        ),
-        destination: PointLatLng(_destination.latitude, _destination.longitude),
-        mode: TravelMode.driving,
-      ),
-    );
-
-    if (result.points.isNotEmpty) {
-      for (var point in result.points) {
-        route.add(LatLng(point.latitude, point.longitude));
-      }
-    }
-
-    setState(() {
-      _routePoints = route;
-    });
-  }
-
   void _moveToCurrentLocation() {
     print("MapController: $_mapController");
 
@@ -176,6 +143,36 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ); // Show loader if location is null
     }
     final placemarkAsync = ref.watch(placemarkProvider);
+    final selectedDestination = ref.watch(selectedDestinationProvider);
+    ref.listen<AsyncValue<Position>>(userLocationStreamProvider, (_, next) {
+      next.whenData((pos) {
+        // Update camera position on user movement
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLng(LatLng(pos.latitude, pos.longitude)),
+        );
+
+        // Update the route polyline dynamically
+        updateRoutePolyline(
+          ref,
+          LatLng(pos.latitude, pos.longitude), // Current user location
+          selectedDestination!, // Your selected hospital or destination
+        );
+      });
+    });
+
+    ref.listen<LatLng?>(selectedDestinationProvider, (previous, next) async {
+      final userPos = ref.read(locationProvider);
+      if (userPos != null && next != null) {
+        updateRoutePolyline(
+          ref,
+          LatLng(userPos.latitude, userPos.longitude),
+          next,
+        );
+
+        // Optionally move camera to destination
+        _mapController?.animateCamera(CameraUpdate.newLatLng(next));
+      }
+    });
 
     return Stack(
       children: [
@@ -263,14 +260,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               zoom: 14.0,
             ),
             markers: markers,
-            //  {
-            // if (_currentPosition.latitude != 0 ||
-            //     _currentPosition.longitude != 0)
-            //   Marker(
-            //     markerId: const MarkerId("currentLocation"),
-            //     position: _currentPosition,
-            //   ),
-            // },
             onMapCreated: (GoogleMapController controller) {
               _mapController = controller;
               // We have the controller, now get the location if we don't have it yet
@@ -279,17 +268,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 _getUserLocation();
               }
             },
-            polylines:
-                _routePoints.isNotEmpty
-                    ? {
-                      Polyline(
-                        polylineId: const PolylineId("route"),
-                        points: _routePoints,
-                        color: Colors.blue,
-                        width: 5,
-                      ),
-                    }
-                    : {},
+            polylines: ref.watch(routePolylineProvider),
           ),
         ),
         Positioned(
