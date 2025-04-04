@@ -2,6 +2,14 @@ import 'package:geocoding/geocoding.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
 
 class MapUsecase {
+  bool isHospital(String placeName) {
+    final regex = RegExp(
+      r'\b(rs|rumah sakit|hospital)\b',
+      caseSensitive: false,
+    );
+    return regex.hasMatch(placeName);
+  }
+
   Future<Set<Placemark>> fetchNearbyHospitals(double lat, double lng) async {
     List<dynamic> response = await GoogleMapsService().getNearbyHospitals(
       lat,
@@ -19,7 +27,7 @@ class MapUsecase {
 
       if (hospitalPlacemarks.isNotEmpty) {
         for (var placemark in hospitalPlacemarks) {
-          placemarks.add(placemark);
+          if (isHospital(placemark.name!)) placemarks.add(placemark);
         }
       }
     }

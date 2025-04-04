@@ -24,14 +24,14 @@ class MapScreenState extends State<MapScreen> {
     -122.4194,
   ); // Default (San Francisco)
   List<LatLng> _routePoints = [];
-  Set<Marker> _markers = {};
+  Set<Marker> markers = {};
   final String apiKey = AppKeys.mapsApiKey;
 
   @override
   void initState() {
     super.initState();
     _getUserLocation();
-    _fetchHospitals();
+    _fetchHospitalsMarker();
   }
 
   @override
@@ -40,7 +40,7 @@ class MapScreenState extends State<MapScreen> {
     _mapController?.dispose();
   }
 
-  Future<void> _fetchHospitals() async {
+  Future<void> _fetchHospitalsMarker() async {
     List<dynamic> hospitals = await GoogleMapsService().getNearbyHospitals(
       _currentPosition.latitude,
       _currentPosition.longitude,
@@ -49,23 +49,28 @@ class MapScreenState extends State<MapScreen> {
     Set<Marker> newMarkers = {}; // ✅ Temporary list to store markers
 
     for (var hospital in hospitals) {
-      Marker hospitalMarker = Marker(
-        markerId: MarkerId(hospital['place_id']), // ✅ Unique ID for each marker
-        position: LatLng(
-          hospital['geometry']['location']['lat'],
-          hospital['geometry']['location']['lng'],
-        ),
-        infoWindow: InfoWindow(
-          // ✅ Show hospital name
-          title: hospital['name'],
-          snippet: hospital['vicinity'],
-        ),
-      );
-
-      newMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
+      String hospitalName = hospital['name'] ?? "";
+      if (MapUsecase().isHospital(hospitalName)) {
+        print(hospitalName);
+        Marker hospitalMarker = Marker(
+          markerId: MarkerId(
+            hospital['place_id'],
+          ), // ✅ Unique ID for each marker
+          position: LatLng(
+            hospital['geometry']['location']['lat'],
+            hospital['geometry']['location']['lng'],
+          ),
+          infoWindow: InfoWindow(
+            // ✅ Show hospital name
+            title: hospital['name'],
+            snippet: hospital['vicinity'],
+          ),
+        );
+        newMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
+      }
     }
     setState(() {
-      _markers.addAll(newMarkers); // ✅ Update state with new markers
+      markers.addAll(newMarkers); // ✅ Update state with new markers
     });
   }
 
@@ -74,6 +79,16 @@ class MapScreenState extends State<MapScreen> {
       Position position = await LocationService().getCurrentLocation();
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
+        markers.add(
+          Marker(
+            markerId: MarkerId("Current Location"),
+            position: LatLng(
+              _currentPosition.latitude,
+              _currentPosition.longitude,
+            ),
+            icon: BitmapDescriptor.defaultMarkerWithHue(20),
+          ),
+        );
       });
 
       // Fetch the address
@@ -152,6 +167,8 @@ class MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           GoogleMap(
+            zoomControlsEnabled: false,
+
             initialCameraPosition: CameraPosition(
               target:
                   _currentPosition.latitude != 0 ||
@@ -163,7 +180,7 @@ class MapScreenState extends State<MapScreen> {
                       ), // Default position until we get real location
               zoom: 14.0,
             ),
-            markers: _markers,
+            markers: markers,
             //  {
             // if (_currentPosition.latitude != 0 ||
             //     _currentPosition.longitude != 0)
@@ -193,18 +210,20 @@ class MapScreenState extends State<MapScreen> {
                     : {},
           ),
           Positioned(
-            bottom: 120,
+            bottom: 60,
             right: 20,
             child: FloatingActionButton(
+              heroTag: "fab1",
               onPressed: _moveToCurrentLocation,
               child: const Icon(Icons.my_location),
             ),
           ),
           Positioned(
-            bottom: 200,
+            bottom: 140,
             right: 20,
             child: FloatingActionButton(
-              onPressed: _fetchHospitals,
+              heroTag: "fab2",
+              onPressed: _fetchHospitalsMarker,
               child: const Icon(Icons.local_hospital_rounded),
             ),
           ),

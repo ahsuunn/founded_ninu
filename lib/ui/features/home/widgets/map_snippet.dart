@@ -31,7 +31,7 @@ class MapSnippet extends ConsumerWidget {
         "&zoom=16"
         "&size=800x300"
         "&maptype=roadmap"
-        "&markers=color:red%7Clabel:U%7C$lat,$lng" // User marker
+        "&markers=color:red%7Clabel:You%7C$lat,$lng" // User marker
         "&key=${AppKeys.mapsApiKey}";
 
     return Container(
