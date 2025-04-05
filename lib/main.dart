@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
@@ -11,11 +12,13 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

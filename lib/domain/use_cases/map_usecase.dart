@@ -69,8 +69,6 @@ class MapUsecase {
                   .decodePolyline(points)
                   .map((e) => LatLng(e.latitude, e.longitude))
                   .toList();
-          print(leg['distance']['text']);
-          print(leg['duration']['text']);
 
           return {
             'polyline': polylinePoints,
