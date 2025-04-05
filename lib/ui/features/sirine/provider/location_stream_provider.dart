@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -13,24 +14,32 @@ final userLocationStreamProvider = StreamProvider<Position>((ref) {
   );
 });
 
-final selectedDestinationProvider = StateProvider<LatLng?>((ref) => null);
-
+final travelModeProvider = StateProvider<String>((ref) => 'driving');
 final routePolylineProvider = StateProvider<Set<Polyline>>((ref) => {});
+final selectedDestinationProvider = StateProvider<LatLng?>((ref) => null);
+final selectedDestinationInfoProvider = StateProvider<DestinationInfo?>(
+  (ref) => null,
+);
+
 void updateRoutePolyline(
   WidgetRef ref,
   LatLng userLocation,
   LatLng destination,
 ) async {
-  List<LatLng> newRoute = await MapUsecase().fetchRoute(
+  final mode = ref.read(travelModeProvider);
+
+  final pointData = await MapUsecase().fetchRoute(
     userLocation,
     destination,
+    mode: mode,
   );
 
-  if (newRoute.isNotEmpty) {
+  // Set the polyline (maybe just one of them, or both separately)
+  if (pointData.containsKey('polyline')) {
     final polyline = Polyline(
       polylineId: const PolylineId('route'),
-      points: newRoute,
-      color: Colors.blue,
+      points: pointData['polyline'],
+      color: colorScheme.primary,
       width: 5,
     );
 

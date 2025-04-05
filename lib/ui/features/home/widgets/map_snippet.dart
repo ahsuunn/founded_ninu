@@ -5,7 +5,6 @@ import 'package:founded_ninu/config/keys.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/widgets/map_skeleton.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
-import 'package:geocoding/geocoding.dart';
 
 class MapSnippet extends ConsumerWidget {
   MapSnippet({super.key});

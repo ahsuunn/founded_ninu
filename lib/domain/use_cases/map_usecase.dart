@@ -38,36 +38,54 @@ class MapUsecase {
     return placemarks;
   }
 
-  Future<List<LatLng>> fetchRoute(LatLng origin, LatLng destination) async {
+  Future<Map<String, dynamic>> fetchRoute(
+    LatLng origin,
+    LatLng destination, {
+    String mode = 'driving', // or 'motorcycle'
+  }) async {
     Dio dio = Dio();
-
     final url = 'https://maps.googleapis.com/maps/api/directions/json';
+
     try {
       Response response = await dio.get(
         url,
         queryParameters: {
           'origin': '${origin.latitude},${origin.longitude}',
           'destination': '${destination.latitude},${destination.longitude}',
+          'mode': mode, // Add mode here
           'key': AppKeys.mapsApiKey,
         },
       );
+
       if (response.statusCode == 200) {
         final data = response.data;
         if (data['routes'].isNotEmpty) {
-          final points = data['routes'][0]['overview_polyline']['points'];
-          return PolylinePoints()
-              .decodePolyline(points)
-              .map((e) => LatLng(e.latitude, e.longitude))
-              .toList();
+          final route = data['routes'][0];
+          final leg = route['legs'][0];
+
+          final points = route['overview_polyline']['points'];
+          final polylinePoints =
+              PolylinePoints()
+                  .decodePolyline(points)
+                  .map((e) => LatLng(e.latitude, e.longitude))
+                  .toList();
+          print(leg['distance']['text']);
+          print(leg['duration']['text']);
+
+          return {
+            'polyline': polylinePoints,
+            'distance': leg['distance']['text'],
+            'duration': leg['duration']['text'],
+          };
         } else {
-          return [];
+          return {};
         }
       } else {
-        throw Exception('Failed to fetched direction: ${response.statusCode}');
+        throw Exception('Failed to fetch directions: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching route: $e');
-      return [];
+      return {};
     }
   }
 }

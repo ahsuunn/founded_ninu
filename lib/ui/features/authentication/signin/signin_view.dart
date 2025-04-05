@@ -24,7 +24,6 @@ class _SigninPageState extends ConsumerState<SigninPage> {
 
   @override
   Widget build(BuildContext context) {
-    String? authError;
     final formKey = ref.watch(formKeyProvider); // Get the form key
     bool submitForm() {
       if (formKey.currentState!.validate()) {
@@ -89,24 +88,24 @@ class _SigninPageState extends ConsumerState<SigninPage> {
 
                         onPressed: () async {
                           String result = await authService.signIn(
-                            emailController.text,
-                            passwordController.text,
+                            // emailController.text,
+                            // passwordController.text,
+                            "test@example.com",
+                            "Gitarbolong1910",
                           );
-                          if (submitForm()) {
-                            if (result == "Success" && context.mounted) {
-                              context.go('/home/Guest');
-                            } else {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      result,
-                                    ), // or custom error text
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                              }
+                          // if (submitForm()) {
+                          if (result == "Success" && context.mounted) {
+                            context.go('/home/Guest');
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result), // or custom error text
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
                             }
+                            // }
                           }
                         },
                         child: Text(

@@ -34,5 +34,5 @@ Future<BitmapDescriptor> createCustomMarkerIcon(
   );
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-  return BitmapDescriptor.fromBytes(pngBytes);
+  return BitmapDescriptor.bytes(pngBytes, width: 36, height: 36);
 }

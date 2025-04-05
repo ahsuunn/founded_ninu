@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/config/keys.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
+import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
@@ -31,6 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Set<Marker> tempMarkers = {}; // ✅ Temporary list to store markers
   final String apiKey = AppKeys.mapsApiKey;
   bool _isBottomSheetVisible = false;
+  bool isMarkerClicked = false;
 
   @override
   void initState() {
@@ -42,6 +44,40 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void dispose() {
     super.dispose();
     _mapController?.dispose();
+  }
+
+  Future<void> _getUserLocation() async {
+    try {
+      Position position = await LocationService().getCurrentLocation();
+      final customIcon = await createCustomMarkerIcon(
+        Icons.place,
+        colorScheme.primary,
+        100.0,
+      );
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        markers.add(
+          Marker(
+            markerId: MarkerId("Current Location"),
+            position: LatLng(
+              _currentPosition.latitude,
+              _currentPosition.longitude,
+            ),
+            icon: customIcon,
+            infoWindow: InfoWindow(title: "Your Current Location"),
+          ),
+        );
+      });
+      _fetchHospitalsMarker();
+      // Move camera to the new location
+      if (_mapController != null) {
+        _mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: _currentPosition, zoom: 14.0),
+          ),
+        );
+      }
+    } catch (e) {}
   }
 
   Future<void> _fetchHospitalsMarker() async {
@@ -60,6 +96,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (MapUsecase().isHospital(hospitalName)) {
         double hospitalLat = hospital['geometry']['location']['lat'];
         double hospitalLng = hospital['geometry']['location']['lng'];
+
         Marker hospitalMarker = Marker(
           markerId: MarkerId(
             hospital['place_id'],
@@ -71,19 +108,59 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             snippet: hospital['vicinity'],
           ),
           icon: customIcon,
-          onTap: () {
-            setState(() => _isBottomSheetVisible = true);
+          onTap: () async {
+            // 1. Get the travel mode
+            final travelMode = ref.read(travelModeProvider);
+
+            // 2. Fetch the route info before showing the sheet
+            final pointData = await MapUsecase().fetchRoute(
+              _currentPosition,
+              LatLng(hospitalLat, hospitalLng),
+              mode: travelMode,
+            );
+
+            // 3. Create DestinationInfo from fetched data
+            final destinationInfo = DestinationInfo(
+              distance: pointData['distance'],
+              duration: pointData['duration'],
+            );
+
+            // 4. Update the provider (if needed elsewhere in the app)
+            ref.read(selectedDestinationInfoProvider.notifier).state =
+                destinationInfo;
+
+            if (context.mounted) {
+              setState(() {
+                _isBottomSheetVisible = true;
+              });
+            }
 
             _scaffoldKey.currentState
                 ?.showBottomSheet(
                   (context) => HospitalBottomSheet(
                     hospitalName: hospitalName,
                     hospitalVicinity: hospital['vicinity'],
-                    onSetDirection: () {
+                    distance: destinationInfo.distance,
+                    duration: destinationInfo.duration,
+
+                    onSetDirection: () async {
+                      final travelMode = ref.read(travelModeProvider);
+
+                      final pointData = await MapUsecase().fetchRoute(
+                        _currentPosition,
+                        LatLng(hospitalLat, hospitalLng),
+                        mode: travelMode,
+                      );
+                      ref
+                          .read(selectedDestinationInfoProvider.notifier)
+                          .state = DestinationInfo(
+                        distance: pointData['distance'],
+                        duration: pointData['duration'],
+                      );
                       ref
                           .read(selectedDestinationProvider.notifier)
                           .state = LatLng(hospitalLat, hospitalLng);
-                      router.pop(context);
+                      if (context.mounted) router.pop(context);
                     },
                   ),
                   backgroundColor: colorScheme.primary, // Optional
@@ -104,37 +181,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
   }
 
-  Future<void> _getUserLocation() async {
-    try {
-      Position position = await LocationService().getCurrentLocation();
-      setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-        markers.add(
-          Marker(
-            markerId: MarkerId("Current Location"),
-            position: LatLng(
-              _currentPosition.latitude,
-              _currentPosition.longitude,
-            ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueAzure,
-            ),
-            infoWindow: InfoWindow(title: "Your Current Location"),
-          ),
-        );
-      });
-      _fetchHospitalsMarker();
-      // Move camera to the new location
-      if (_mapController != null) {
-        _mapController!.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(target: _currentPosition, zoom: 14.0),
-          ),
-        );
-      }
-    } catch (e) {}
-  }
-
   void _moveToCurrentLocation() {
     if (_mapController != null) {
       _mapController!.animateCamera(CameraUpdate.newLatLng(_currentPosition));
@@ -151,7 +197,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ); // Show loader if location is null
     }
     final placemarkAsync = ref.watch(placemarkProvider);
-    final selectedDestination = ref.watch(selectedDestinationProvider);
+    final travelMode = ref.watch(travelModeProvider);
+    ref.watch(selectedDestinationProvider);
     ref.listen<AsyncValue<Position>>(userLocationStreamProvider, (_, next) {
       next.whenData((pos) {
         // Update camera position on user movement
@@ -159,12 +206,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         if (_lastLocation == LatLng(0, 0) || _lastLocation != newLocation) {
           _mapController?.animateCamera(CameraUpdate.newLatLng(newLocation));
         }
-
+        final chosenDestination = ref.watch(selectedDestinationProvider);
         // Update the route polyline dynamically
         updateRoutePolyline(
           ref,
           LatLng(pos.latitude, pos.longitude), // Current user location
-          selectedDestination!, // Your selected hospital or destination
+          chosenDestination!, // Your selected hospital or destination
         );
         _lastLocation = newLocation;
       });
@@ -292,16 +339,46 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             child: const Icon(Icons.my_location),
           ),
         ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 100),
-          bottom: _isBottomSheetVisible ? 330 : 130,
-          right: 20,
-          child: FloatingActionButton(
-            heroTag: "fab2",
-            onPressed: _fetchHospitalsMarker,
-            child: const Icon(Icons.local_hospital_rounded),
-          ),
-        ),
+        _isBottomSheetVisible
+            ? AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              bottom: _isBottomSheetVisible ? 260 : 0,
+              left: 20,
+              child: FloatingActionButton(
+                backgroundColor:
+                    (travelMode == "two-wheeled")
+                        ? Color(0xFFFDAB33)
+                        : Color(0x80FDAB33),
+                heroTag: "fab1",
+                onPressed:
+                    () =>
+                        ref.read(travelModeProvider.notifier).state =
+                            "two-wheeled",
+                child: const Icon(Icons.motorcycle_sharp, color: Colors.black),
+              ),
+            )
+            : SizedBox(),
+        _isBottomSheetVisible
+            ? AnimatedPositioned(
+              duration: const Duration(milliseconds: 100),
+              bottom: _isBottomSheetVisible ? 330 : 0,
+              left: 20,
+              child: FloatingActionButton(
+                backgroundColor:
+                    (travelMode == "driving")
+                        ? Color(0xFFFDAB33)
+                        : Color(0x80FDAB33),
+                heroTag: "fab1",
+                onPressed:
+                    () =>
+                        ref.read(travelModeProvider.notifier).state = "driving",
+                child: const Icon(
+                  Icons.directions_car_outlined,
+                  color: Color(0xA0000000),
+                ),
+              ),
+            )
+            : SizedBox(),
       ],
     );
   }

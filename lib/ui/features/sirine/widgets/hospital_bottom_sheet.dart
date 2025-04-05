@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 class HospitalBottomSheet extends StatelessWidget {
   final String hospitalName;
   final String hospitalVicinity;
+  final String distance;
+  final String duration;
   final VoidCallback onSetDirection;
 
   const HospitalBottomSheet({
     super.key,
     required this.hospitalName,
     required this.hospitalVicinity,
+    required this.distance,
+    required this.duration,
     required this.onSetDirection,
   });
 
@@ -57,6 +61,20 @@ class HospitalBottomSheet extends StatelessWidget {
                           ),
                           Text(
                             hospitalVicinity,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            distance,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            duration,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,

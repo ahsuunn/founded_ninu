@@ -7,7 +7,6 @@ import 'package:founded_ninu/ui/features/home/widgets/map_snippet.dart';
 import 'package:founded_ninu/ui/features/home/widgets/medicalguide_list.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 import 'package:founded_ninu/ui/features/home/widgets/videocall_container.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends ConsumerStatefulWidget {
