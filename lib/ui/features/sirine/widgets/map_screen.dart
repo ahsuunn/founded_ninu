@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/config/keys.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
@@ -8,12 +7,11 @@ import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/custom_icon.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/hospital_bottom_sheet.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,7 +36,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
     _getUserLocation();
-    _fetchHospitalsMarker();
   }
 
   @override
@@ -51,6 +48,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     List<dynamic> hospitals = await GoogleMapsService().getNearbyHospitals(
       _currentPosition.latitude,
       _currentPosition.longitude,
+    );
+    final customIcon = await createCustomMarkerIcon(
+      Icons.local_hospital_outlined,
+      colorScheme.primary,
+      90.0,
     );
 
     for (var hospital in hospitals) {
@@ -68,6 +70,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             title: hospital['name'],
             snippet: hospital['vicinity'],
           ),
+          icon: customIcon,
           onTap: () {
             setState(() => _isBottomSheetVisible = true);
 
@@ -120,7 +123,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         );
       });
-
+      _fetchHospitalsMarker();
       // Move camera to the new location
       if (_mapController != null) {
         _mapController!.animateCamera(
