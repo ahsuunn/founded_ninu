@@ -42,15 +42,6 @@ class MapUsecase {
     Dio dio = Dio();
 
     final url = 'https://maps.googleapis.com/maps/api/directions/json';
-    final originStr = '${origin.latitude},${origin.longitude}';
-    final destinationStr = '${destination.latitude},${destination.longitude}';
-
-    final uri = Uri.https('maps.googleapis.com', '/maps/api/directions/json', {
-      'origin': originStr,
-      'destination': destinationStr,
-      'key': AppKeys.mapsApiKey,
-    });
-
     try {
       Response response = await dio.get(
         url,

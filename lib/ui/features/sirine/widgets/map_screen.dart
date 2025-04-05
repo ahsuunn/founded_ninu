@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/config/keys.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/hospital_bottom_sheet.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
+
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -23,9 +28,11 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   GoogleMapController? _mapController;
   LatLng _currentPosition = const LatLng(0, 0);
+  LatLng _lastLocation = LatLng(0, 0);
   Set<Marker> markers = {};
   Set<Marker> tempMarkers = {}; // ✅ Temporary list to store markers
   final String apiKey = AppKeys.mapsApiKey;
+  bool _isBottomSheetVisible = false;
 
   @override
   void initState() {
@@ -51,7 +58,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (MapUsecase().isHospital(hospitalName)) {
         double hospitalLat = hospital['geometry']['location']['lat'];
         double hospitalLng = hospital['geometry']['location']['lng'];
-        print(hospitalName);
         Marker hospitalMarker = Marker(
           markerId: MarkerId(
             hospital['place_id'],
@@ -62,13 +68,30 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             title: hospital['name'],
             snippet: hospital['vicinity'],
           ),
-          onTap:
-              () => {
-                ref.read(selectedDestinationProvider.notifier).state = LatLng(
-                  hospitalLat,
-                  hospitalLng,
-                ),
-              },
+          onTap: () {
+            setState(() => _isBottomSheetVisible = true);
+
+            _scaffoldKey.currentState
+                ?.showBottomSheet(
+                  (context) => HospitalBottomSheet(
+                    hospitalName: hospitalName,
+                    hospitalVicinity: hospital['vicinity'],
+                    onSetDirection: () {
+                      ref
+                          .read(selectedDestinationProvider.notifier)
+                          .state = LatLng(hospitalLat, hospitalLng);
+                      router.pop(context);
+                    },
+                  ),
+                  backgroundColor: colorScheme.primary, // Optional
+                )
+                .closed
+                .then((_) {
+                  setState(() {
+                    _isBottomSheetVisible = false;
+                  });
+                });
+          },
         );
         tempMarkers.add(hospitalMarker); // ✅ Add marker to temporary list
       }
@@ -98,20 +121,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         );
       });
 
-      // Fetch the address
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        String address =
-            "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-
-        print("Current Address: $address");
-      }
-
       // Move camera to the new location
       if (_mapController != null) {
         _mapController!.animateCamera(
@@ -120,14 +129,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         );
       }
-    } catch (e) {
-      print("Error fetching location: $e");
-    }
+    } catch (e) {}
   }
 
   void _moveToCurrentLocation() {
-    print("MapController: $_mapController");
-
     if (_mapController != null) {
       _mapController!.animateCamera(CameraUpdate.newLatLng(_currentPosition));
     }
@@ -147,9 +152,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     ref.listen<AsyncValue<Position>>(userLocationStreamProvider, (_, next) {
       next.whenData((pos) {
         // Update camera position on user movement
-        _mapController?.animateCamera(
-          CameraUpdate.newLatLng(LatLng(pos.latitude, pos.longitude)),
-        );
+        final newLocation = LatLng(pos.latitude, pos.longitude);
+        if (_lastLocation == LatLng(0, 0) || _lastLocation != newLocation) {
+          _mapController?.animateCamera(CameraUpdate.newLatLng(newLocation));
+        }
 
         // Update the route polyline dynamically
         updateRoutePolyline(
@@ -157,6 +163,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           LatLng(pos.latitude, pos.longitude), // Current user location
           selectedDestination!, // Your selected hospital or destination
         );
+        _lastLocation = newLocation;
       });
     });
 
@@ -177,6 +184,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     return Stack(
       children: [
         Scaffold(
+          key: _scaffoldKey,
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             leading: Padding(
@@ -271,8 +279,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             polylines: ref.watch(routePolylineProvider),
           ),
         ),
-        Positioned(
-          bottom: 60,
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 100),
+          bottom: _isBottomSheetVisible ? 260 : 60,
           right: 20,
           child: FloatingActionButton(
             heroTag: "fab1",
@@ -280,8 +289,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             child: const Icon(Icons.my_location),
           ),
         ),
-        Positioned(
-          bottom: 140,
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 100),
+          bottom: _isBottomSheetVisible ? 330 : 130,
           right: 20,
           child: FloatingActionButton(
             heroTag: "fab2",

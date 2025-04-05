@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 final userLocationStreamProvider = StreamProvider<Position>((ref) {
   return Geolocator.getPositionStream(
     locationSettings: LocationSettings(
-      accuracy: LocationAccuracy.high,
+      accuracy: LocationAccuracy.best,
       distanceFilter: 10, // Update every 10 meters
     ),
   );
