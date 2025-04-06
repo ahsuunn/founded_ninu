@@ -39,14 +39,14 @@ class MapFloatingButtons extends ConsumerWidget {
               left: 20,
               child: FloatingActionButton(
                 backgroundColor:
-                    (travelMode == "two-wheeled")
+                    (travelMode == "motorcycle")
                         ? Color(0xFFFDAB33)
                         : Color(0x80FDAB33),
                 heroTag: "fab2",
                 onPressed:
                     () =>
                         ref.read(travelModeProvider.notifier).state =
-                            "two-wheeled",
+                            "motorcycle",
                 child: const Icon(Icons.motorcycle_sharp, color: Colors.black),
               ),
             )

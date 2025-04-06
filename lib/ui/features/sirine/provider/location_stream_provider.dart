@@ -27,6 +27,7 @@ void updateRoutePolyline(
   LatLng destination,
 ) async {
   final mode = ref.read(travelModeProvider);
+  print("UPDATE ROUTE LOCATION");
   final pointData = await MapUsecase().fetchRoute(
     userLocation,
     destination,

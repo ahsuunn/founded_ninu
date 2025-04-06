@@ -18,16 +18,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class HospitalBottomSheet extends ConsumerStatefulWidget {
   final String hospitalName;
   final String hospitalVicinity;
-  final String distance;
-  final String duration;
   final VoidCallback onSetDirection;
 
   const HospitalBottomSheet({
     super.key,
     required this.hospitalName,
     required this.hospitalVicinity,
-    required this.distance,
-    required this.duration,
     required this.onSetDirection,
   });
 
@@ -38,12 +34,85 @@ class HospitalBottomSheet extends ConsumerStatefulWidget {
 
 class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
   @override
+  void initState() {
+    super.initState();
+
+    // Use WidgetsBinding to wait until ref is fully ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.listenManual<String>(travelModeProvider, (prev, next) async {
+        final markerId = ref.read(selectedMarkerIdProvider);
+        final currentPosition = ref.read(locationProvider);
+        final hospitalMap = ref.read(hospitalMarkerPositionsProvider);
+
+        print("MODE CHANGE TO $next");
+
+        if (markerId != null &&
+            currentPosition != null &&
+            hospitalMap[markerId] != null) {
+          final hospitalPosition = hospitalMap[markerId]!;
+
+          try {
+            final data = await MapUsecase().fetchRoute(
+              LatLng(currentPosition.latitude, currentPosition.longitude),
+              hospitalPosition,
+              mode: next,
+            );
+
+            final info = DestinationInfo(
+              distance: data['distance'],
+              duration: data['duration'],
+            );
+
+            ref.read(selectedDestinationInfoProvider.notifier).state = info;
+            // ref.read(selectedDestinationProvider.notifier).state =
+            //     hospitalPosition;
+          } catch (e) {
+            debugPrint("Failed to fetch new route on mode change: $e");
+          }
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final markerId = ref.watch(selectedMarkerIdProvider);
     final currentPosition = ref.watch(locationProvider);
-    final mode = ref.watch(travelModeProvider);
+    String mode = ref.watch(travelModeProvider);
     final hospitalMap = ref.watch(hospitalMarkerPositionsProvider);
+    final destinationInfo = ref.watch(selectedDestinationInfoProvider);
+    // print("DESTINATION INFO : ${destinationInfo?.distance ?? "no distance"}");
+    // print("MODE : $mode");
+
+    // Listen for travel mode changes
+    ref.listen<String>(travelModeProvider, (prev, next) async {
+      final markerId = ref.read(selectedMarkerIdProvider);
+      final currentPosition = ref.read(locationProvider);
+      final hospitalMap = ref.read(hospitalMarkerPositionsProvider);
+      // print("MODE CHANGE TO $mode");
+      if (markerId != null &&
+          currentPosition != null &&
+          hospitalMap[markerId] != null) {
+        final hospitalPosition = hospitalMap[markerId]!;
+
+        try {
+          final data = await MapUsecase().fetchRoute(
+            LatLng(currentPosition.latitude, currentPosition.longitude),
+            hospitalPosition,
+            mode: next,
+          );
+
+          final info = DestinationInfo(
+            distance: data['distance'],
+            duration: data['duration'],
+          );
+          ref.read(selectedDestinationInfoProvider.notifier).state = info;
+        } catch (e) {
+          debugPrint("Failed to fetch new route on mode change: $e");
+        }
+      }
+    });
 
     return DraggableScrollableSheet(
       expand: false,
@@ -93,14 +162,14 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                             ),
                           ),
                           Text(
-                            widget.distance,
+                            destinationInfo?.distance ?? "",
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            widget.duration,
+                            destinationInfo?.duration ?? "",
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,

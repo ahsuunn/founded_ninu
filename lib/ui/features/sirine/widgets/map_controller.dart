@@ -93,6 +93,7 @@ class MapController {
             hospitalPosition,
             mode: mode,
           );
+          print(data);
           final info = DestinationInfo(
             distance: data['distance'],
             duration: data['duration'],
@@ -112,8 +113,8 @@ class MapController {
                 (context) => HospitalBottomSheet(
                   hospitalName: name,
                   hospitalVicinity: hospital['vicinity'],
-                  distance: info.distance,
-                  duration: info.duration,
+                  // distance: info.distance,
+                  // duration: info.duration,
                   onSetDirection: () async {
                     final updatedData = await MapUsecase().fetchRoute(
                       currentPosition,
@@ -128,6 +129,7 @@ class MapController {
                     );
                     ref.read(selectedDestinationProvider.notifier).state =
                         hospitalPosition;
+                    print("CURRENT HOSPITAL POSTIION : $hospitalPosition");
                   },
                 ),
                 backgroundColor: colorScheme.primary,
