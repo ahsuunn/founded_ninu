@@ -5,6 +5,7 @@ import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
@@ -114,6 +115,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
               ],
             ),
+          ),
+        if (ref.watch(showOverlayPromptProvider))
+          OverlayPromptWidget(
+            message: "Permission has been allowed, proceed to activate Ninu?",
+            buttonText: "Activate",
           ),
       ],
     );

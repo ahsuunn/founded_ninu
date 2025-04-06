@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/entities/locked_address.dart';
@@ -12,7 +13,9 @@ import 'package:founded_ninu/ui/features/sirine/provider/locked_initial_position
 import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_starttime_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
@@ -195,8 +198,9 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                               ),
                               ElevatedButton.icon(
                                 onPressed: () async {
-                                  //fetch the data if not hd been set.
-                                  debugPrint(markerId);
+                                  ref
+                                      .read(travelStateModeProvider.notifier)
+                                      .state = TravelStateMode.startMode;
 
                                   //Get Current Address
                                   final placemarks = await ref.read(
@@ -282,46 +286,50 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                     const Duration(seconds: 2),
                                   );
 
-                                  OverlayPromptWidget(
-                                    message:
-                                        "Permission has been allowed, proceed to activate Ninu?",
-                                    buttonText: "Activate",
-                                    onPressed: (() {}),
-                                  );
-
                                   ref.read(isLoadingProvider.notifier).state =
                                       false;
 
+                                  ref
+                                      .read(showOverlayPromptProvider.notifier)
+                                      .state = true;
+
                                   //Pop the current Bottom sheet
                                   if (context.mounted) context.pop();
-                                  Future.microtask(() {
-                                    ref
-                                        .read(
-                                          activeBottomSheetProvider.notifier,
-                                        )
-                                        .state = ActiveBottomSheet.firstStart;
-                                    //Open the new bottom sheet
-                                    final scaffoldKey = ref.read(
-                                      scaffoldKeyProvider,
-                                    );
-                                    scaffoldKey.currentState
-                                        ?.showBottomSheet(
-                                          (context) =>
-                                              FirstStartModeBottomSheet(),
-                                          backgroundColor: colorScheme.primary,
-                                        )
-                                        .closed
-                                        .then(
-                                          (_) =>
+
+                                  SchedulerBinding.instance
+                                      .addPostFrameCallback((_) {
+                                        if (!context.mounted) return;
+
+                                        ref
+                                                .read(
+                                                  activeBottomSheetProvider
+                                                      .notifier,
+                                                )
+                                                .state =
+                                            ActiveBottomSheet.firstStart;
+                                        //Open the new bottom sheet
+                                        final scaffoldKey = ref.read(
+                                          scaffoldKeyProvider,
+                                        );
+                                        scaffoldKey.currentState
+                                            ?.showBottomSheet(
+                                              (context) =>
+                                                  FirstStartModeBottomSheet(),
+                                              backgroundColor:
+                                                  colorScheme.primary,
+                                            )
+                                            .closed
+                                            .then((_) {
+                                              if (!mounted) return;
                                               ref
                                                   .read(
                                                     activeBottomSheetProvider
                                                         .notifier,
                                                   )
                                                   .state = ActiveBottomSheet
-                                                      .none,
-                                        );
-                                  });
+                                                      .none;
+                                            });
+                                      });
                                 },
                                 icon: const Icon(Icons.navigation_rounded),
                                 label: const Text("Start"),

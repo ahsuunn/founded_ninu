@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/hospital_info.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
@@ -102,48 +106,78 @@ class MapController {
             duration: data['duration'],
           );
           ref.read(selectedDestinationInfoProvider.notifier).state = info;
-
-          //Notify FAB positioning
-          ref.read(activeBottomSheetProvider.notifier).state =
-              ActiveBottomSheet.hospital;
-
           //Notify which marker is chosen
           ref.read(selectedMarkerIdProvider.notifier).state = placeId;
+          //Current Travel State
+          final currentMode = ref.read(travelStateModeProvider);
 
-          // Show bottom sheet
-          final scaffoldKey = ref.read(scaffoldKeyProvider);
-          scaffoldKey.currentState
-              ?.showBottomSheet(
-                (context) => HospitalBottomSheet(
-                  hospitalName: hospitalName,
-                  hospitalVicinity: hospital['vicinity'],
-                  onSetDirection: () async {
-                    final updatedData = await MapUsecase().fetchRoute(
-                      currentPosition,
-                      hospitalPosition,
-                      mode: mode,
-                    );
-                    ref
-                        .read(selectedDestinationInfoProvider.notifier)
-                        .state = DestinationInfo(
-                      distance: updatedData['distance'],
-                      duration: updatedData['duration'],
-                    );
-                    ref.read(selectedDestinationProvider.notifier).state =
-                        hospitalPosition;
-                    debugPrint("CURRENT HOSPITAL POSTIION : $hospitalPosition");
+          if (currentMode == TravelStateMode.defaultMode) {
+            ref.read(activeBottomSheetProvider.notifier).state =
+                ActiveBottomSheet.hospital;
+            // Show bottom sheet
+            final scaffoldKey = ref.read(scaffoldKeyProvider);
+            scaffoldKey.currentState
+                ?.showBottomSheet(
+                  (context) => HospitalBottomSheet(
+                    hospitalName: hospitalName,
+                    hospitalVicinity: hospital['vicinity'],
+                    onSetDirection: () async {
+                      final updatedData = await MapUsecase().fetchRoute(
+                        currentPosition,
+                        hospitalPosition,
+                        mode: mode,
+                      );
+                      ref
+                          .read(selectedDestinationInfoProvider.notifier)
+                          .state = DestinationInfo(
+                        distance: updatedData['distance'],
+                        duration: updatedData['duration'],
+                      );
+                      ref.read(selectedDestinationProvider.notifier).state =
+                          hospitalPosition;
+                      debugPrint(
+                        "CURRENT HOSPITAL POSTIION : $hospitalPosition",
+                      );
+                    },
+                  ),
+                  backgroundColor: colorScheme.primary,
+                )
+                .closed
+                .then(
+                  (_) => {
+                    ref.read(activeBottomSheetProvider.notifier).state =
+                        ActiveBottomSheet.none,
+                    ref.read(selectedMarkerIdProvider.notifier).state = null,
                   },
-                ),
-                backgroundColor: colorScheme.primary,
-              )
-              .closed
-              .then(
-                (_) => {
-                  ref.read(activeBottomSheetProvider.notifier).state =
-                      ActiveBottomSheet.none,
-                  ref.read(selectedMarkerIdProvider.notifier).state = null,
-                },
-              );
+                );
+          } else if (currentMode == TravelStateMode.startMode) {
+            final currentHospitalDestinationName =
+                ref.watch(lockedDestinationProvider)?.name;
+            final activeBottomSheet = ref.watch(activeBottomSheetProvider);
+            print(activeBottomSheet);
+            print("LOCKED HOSPITAL NAME: $currentHospitalDestinationName");
+            print("MARKER HOSPITAL NAME: $hospitalName");
+            if (currentHospitalDestinationName != null &&
+                currentHospitalDestinationName == hospitalName) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                ref.read(activeBottomSheetProvider.notifier).state =
+                    ActiveBottomSheet.firstStart;
+                //Open the new bottom sheet
+                final scaffoldKey = ref.read(scaffoldKeyProvider);
+                scaffoldKey.currentState
+                    ?.showBottomSheet(
+                      (context) => FirstStartModeBottomSheet(),
+                      backgroundColor: colorScheme.primary,
+                    )
+                    .closed
+                    .then(
+                      (_) =>
+                          ref.read(activeBottomSheetProvider.notifier).state =
+                              ActiveBottomSheet.none,
+                    );
+              });
+            }
+          }
         },
       );
       final positionsNotifier = ref.read(
