@@ -3,20 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
 import 'package:founded_ninu/data/services/map_services.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/hospital_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/custom_icon.dart';
 import 'package:founded_ninu/config/keys.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 
 class MapController {
   GoogleMapController? mapController;
@@ -90,6 +86,7 @@ class MapController {
         icon: customIcon,
         infoWindow: InfoWindow(title: name, snippet: hospital['vicinity']),
         onTap: () async {
+          final placeId = hospital['place_id'];
           final mode = ref.read(travelModeProvider);
           final data = await MapUsecase().fetchRoute(
             currentPosition,
@@ -104,7 +101,9 @@ class MapController {
 
           //Notify FAB positioning
           ref.read(isBottomSheetOpenProvider.notifier).state = true;
-          ref.read(fabOffsetProvider.notifier).state = 260;
+
+          //Notify which marker is chosen
+          ref.read(selectedMarkerIdProvider.notifier).state = placeId;
 
           // Show bottom sheet
           final scaffoldKey = ref.read(scaffoldKeyProvider);
@@ -129,18 +128,26 @@ class MapController {
                     );
                     ref.read(selectedDestinationProvider.notifier).state =
                         hospitalPosition;
-                    if (context.mounted) context.pop();
                   },
                 ),
                 backgroundColor: colorScheme.primary,
               )
               .closed
               .then(
-                (_) =>
-                    ref.read(isBottomSheetOpenProvider.notifier).state = false,
+                (_) => {
+                  ref.read(isBottomSheetOpenProvider.notifier).state = false,
+                  ref.read(selectedMarkerIdProvider.notifier).state = null,
+                },
               );
         },
       );
+      final positionsNotifier = ref.read(
+        hospitalMarkerPositionsProvider.notifier,
+      );
+      final currentMap = Map<String, LatLng>.from(positionsNotifier.state);
+      currentMap[hospital['place_id']] = hospitalPosition;
+      positionsNotifier.state = currentMap;
+
       markerSet.add(marker);
       markers.state = {...markerSet};
     }

@@ -56,7 +56,6 @@ class MapUsecase {
           'key': AppKeys.mapsApiKey,
         },
       );
-
       if (response.statusCode == 200) {
         final data = response.data;
         if (data['routes'].isNotEmpty) {

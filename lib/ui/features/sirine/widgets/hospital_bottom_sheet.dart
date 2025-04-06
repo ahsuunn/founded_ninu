@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/domain/entities/destination_info.dart';
+import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/core/themes.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HospitalBottomSheet extends StatelessWidget {
+class HospitalBottomSheet extends ConsumerStatefulWidget {
   final String hospitalName;
   final String hospitalVicinity;
   final String distance;
@@ -17,8 +32,19 @@ class HospitalBottomSheet extends StatelessWidget {
   });
 
   @override
+  ConsumerState<HospitalBottomSheet> createState() =>
+      _HospitalBottomSheetState();
+}
+
+class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final markerId = ref.watch(selectedMarkerIdProvider);
+    final currentPosition = ref.watch(locationProvider);
+    final mode = ref.watch(travelModeProvider);
+    final hospitalMap = ref.watch(hospitalMarkerPositionsProvider);
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.25,
@@ -52,7 +78,7 @@ class HospitalBottomSheet extends StatelessWidget {
                         spacing: 6,
                         children: [
                           Text(
-                            hospitalName,
+                            widget.hospitalName,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -60,21 +86,21 @@ class HospitalBottomSheet extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            hospitalVicinity,
+                            widget.hospitalVicinity,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            distance,
+                            widget.distance,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            duration,
+                            widget.duration,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Colors.white,
@@ -85,12 +111,73 @@ class HospitalBottomSheet extends StatelessWidget {
                             runSpacing: 8, // space between lines
                             children: [
                               ElevatedButton.icon(
-                                onPressed: onSetDirection,
+                                onPressed: widget.onSetDirection,
                                 icon: const Icon(Icons.directions),
                                 label: const Text("Direction"),
                               ),
                               ElevatedButton.icon(
-                                onPressed: () => {},
+                                onPressed: () async {
+                                  //fetch the data if not hd been set.
+                                  debugPrint(markerId);
+
+                                  final hospitalPosition =
+                                      hospitalMap[markerId];
+                                  if (hospitalPosition != null) {
+                                    final data = await MapUsecase().fetchRoute(
+                                      LatLng(
+                                        currentPosition!.latitude,
+                                        currentPosition.longitude,
+                                      ),
+                                      hospitalPosition,
+                                      mode: mode,
+                                    );
+                                    final info = DestinationInfo(
+                                      distance: data['distance'],
+                                      duration: data['duration'],
+                                    );
+                                    ref
+                                        .read(
+                                          selectedDestinationInfoProvider
+                                              .notifier,
+                                        )
+                                        .state = info;
+                                    ref
+                                        .read(
+                                          selectedDestinationProvider.notifier,
+                                        )
+                                        .state = hospitalPosition;
+                                  }
+
+                                  ref.read(isLoadingProvider.notifier).state =
+                                      true;
+                                  // Simulate hospital permission request (mock API call)
+                                  await Future.delayed(
+                                    const Duration(seconds: 2),
+                                  );
+
+                                  ref.read(isLoadingProvider.notifier).state =
+                                      false;
+
+                                  // Lock the destination (if needed)
+                                  // await MapController().startNavigationFlow(
+                                  //   ref,
+                                  // );
+
+                                  //Pop the current Bottom sheet
+                                  if (context.mounted) context.pop();
+
+                                  //Open the new bottom sheet
+                                  final scaffoldKey = ref.read(
+                                    scaffoldKeyProvider,
+                                  );
+                                  scaffoldKey.currentState?.showBottomSheet(
+                                    (context) => FirstStartModeBottomSheet(),
+                                    backgroundColor: colorScheme.primary,
+                                  );
+                                  ref
+                                      .read(isBottomSheetOpenProvider.notifier)
+                                      .state = true;
+                                },
                                 icon: const Icon(Icons.navigation_rounded),
                                 label: const Text("Start"),
                               ),

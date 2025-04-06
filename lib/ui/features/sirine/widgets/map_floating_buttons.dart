@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapFloatingButtons extends ConsumerWidget {
   final MapController controller;

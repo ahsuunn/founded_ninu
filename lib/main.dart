@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/core/routing.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {

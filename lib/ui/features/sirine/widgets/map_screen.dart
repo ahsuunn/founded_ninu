@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
@@ -54,6 +55,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
       ref.listen<LatLng?>(selectedDestinationProvider, (prev, next) {
         final userPos = ref.read(locationProvider);
+        print("LISTENING TO SELECTED DESTINATION PROVIDER");
         if (userPos != null && next != null) {
           updateRoutePolyline(
             ref,
@@ -72,6 +74,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           body: MapView(mapController: mapController, scaffoldKey: scaffoldKey),
         ),
         MapFloatingButtons(controller: mapController),
+        if (ref.watch(isLoadingProvider))
+          ModalBarrier(dismissible: false, color: Color(0x80000000)),
+        if (ref.watch(isLoadingProvider))
+          const Center(child: CircularProgressIndicator()),
       ],
     );
   }
