@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/domain/entities/destination_info.dart';
+import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
@@ -37,7 +39,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       _hasListened = true;
 
       ref.listen<AsyncValue<Position>>(userLocationStreamProvider, (_, next) {
-        next.whenData((pos) {
+        next.whenData((pos) async {
           final newLocation = LatLng(pos.latitude, pos.longitude);
           if (_lastLocation == LatLng(0, 0) || _lastLocation != newLocation) {
             mapController.mapController?.animateCamera(
@@ -45,9 +47,26 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
           }
 
+          //Update Polyline
           final chosenDestination = ref.read(selectedDestinationProvider);
           if (chosenDestination != null) {
             updateRoutePolyline(ref, newLocation, chosenDestination);
+          }
+
+          // Update destination info (distance and duration)
+          final travelMode = ref.read(travelModeProvider);
+          if (chosenDestination != null) {
+            final data = await MapUsecase().fetchRoute(
+              newLocation,
+              chosenDestination,
+              mode: travelMode,
+            );
+            final updatedInfo = DestinationInfo(
+              distance: data['distance'],
+              duration: data['duration'],
+            );
+            ref.read(selectedDestinationInfoProvider.notifier).state =
+                updatedInfo;
           }
 
           _lastLocation = newLocation;

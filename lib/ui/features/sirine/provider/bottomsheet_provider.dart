@@ -1,4 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final isBottomSheetOpenProvider = StateProvider<bool>((ref) => false);
+enum ActiveBottomSheet { none, hospital, firstStart, secondStart }
+
+// final isBottomSheetOpenProvider = StateProvider<bool>((ref) => false);
 final fabOffsetProvider = StateProvider<double>((ref) => 100); // default offset
+final activeBottomSheetProvider = StateProvider<ActiveBottomSheet>(
+  (ref) => ActiveBottomSheet.none,
+);

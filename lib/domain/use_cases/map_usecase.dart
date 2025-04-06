@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:founded_ninu/config/keys.dart';
 import 'package:geocoding/geocoding.dart';
@@ -177,26 +178,26 @@ class MapUsecase {
             'duration': duration,
           };
         } else {
-          print('No routes found in the response');
+          debugPrint('No routes found in the response');
           return {};
         }
       } else {
-        print('Error response: ${response.data}');
+        debugPrint('Error response: ${response.data}');
         throw Exception('Failed to fetch directions: ${response.statusCode}');
       }
     } catch (e) {
       if (e is DioException) {
-        print('DioException: ${e.message}');
-        print('Response data: ${e.response?.data}');
-        print('Response status code: ${e.response?.statusCode}');
-        // Print the complete request details for debugging
-        print('Request details:');
-        print('URL: ${e.requestOptions.uri}');
-        print('Method: ${e.requestOptions.method}');
-        print('Headers: ${e.requestOptions.headers}');
-        print('Data: ${e.requestOptions.data}');
+        debugPrint('DioException: ${e.message}');
+        debugPrint('Response data: ${e.response?.data}');
+        debugPrint('Response status code: ${e.response?.statusCode}');
+        // debugPrint the complete request details for debugging
+        debugPrint('Request details:');
+        debugPrint('URL: ${e.requestOptions.uri}');
+        debugPrint('Method: ${e.requestOptions.method}');
+        debugPrint('Headers: ${e.requestOptions.headers}');
+        debugPrint('Data: ${e.requestOptions.data}');
       }
-      print('Error fetching route: $e');
+      debugPrint('Error fetching route: $e');
       return {};
     }
   }

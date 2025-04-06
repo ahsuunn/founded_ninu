@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/domain/entities/hospital_info.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
@@ -73,8 +74,8 @@ class MapController {
     );
 
     for (var hospital in hospitals) {
-      final name = hospital['name'] ?? "";
-      if (!MapUsecase().isHospital(name)) continue;
+      final hospitalName = hospital['name'] ?? "";
+      if (!MapUsecase().isHospital(hospitalName)) continue;
 
       final hospitalLat = hospital['geometry']['location']['lat'];
       final hospitalLng = hospital['geometry']['location']['lng'];
@@ -84,7 +85,10 @@ class MapController {
         markerId: MarkerId(hospital['place_id']),
         position: hospitalPosition,
         icon: customIcon,
-        infoWindow: InfoWindow(title: name, snippet: hospital['vicinity']),
+        infoWindow: InfoWindow(
+          title: hospitalName,
+          snippet: hospital['vicinity'],
+        ),
         onTap: () async {
           final placeId = hospital['place_id'];
           final mode = ref.read(travelModeProvider);
@@ -93,7 +97,6 @@ class MapController {
             hospitalPosition,
             mode: mode,
           );
-          print(data);
           final info = DestinationInfo(
             distance: data['distance'],
             duration: data['duration'],
@@ -101,7 +104,8 @@ class MapController {
           ref.read(selectedDestinationInfoProvider.notifier).state = info;
 
           //Notify FAB positioning
-          ref.read(isBottomSheetOpenProvider.notifier).state = true;
+          ref.read(activeBottomSheetProvider.notifier).state =
+              ActiveBottomSheet.hospital;
 
           //Notify which marker is chosen
           ref.read(selectedMarkerIdProvider.notifier).state = placeId;
@@ -111,10 +115,8 @@ class MapController {
           scaffoldKey.currentState
               ?.showBottomSheet(
                 (context) => HospitalBottomSheet(
-                  hospitalName: name,
+                  hospitalName: hospitalName,
                   hospitalVicinity: hospital['vicinity'],
-                  // distance: info.distance,
-                  // duration: info.duration,
                   onSetDirection: () async {
                     final updatedData = await MapUsecase().fetchRoute(
                       currentPosition,
@@ -129,7 +131,7 @@ class MapController {
                     );
                     ref.read(selectedDestinationProvider.notifier).state =
                         hospitalPosition;
-                    print("CURRENT HOSPITAL POSTIION : $hospitalPosition");
+                    debugPrint("CURRENT HOSPITAL POSTIION : $hospitalPosition");
                   },
                 ),
                 backgroundColor: colorScheme.primary,
@@ -137,7 +139,8 @@ class MapController {
               .closed
               .then(
                 (_) => {
-                  ref.read(isBottomSheetOpenProvider.notifier).state = false,
+                  ref.read(activeBottomSheetProvider.notifier).state =
+                      ActiveBottomSheet.none,
                   ref.read(selectedMarkerIdProvider.notifier).state = null,
                 },
               );
@@ -146,8 +149,13 @@ class MapController {
       final positionsNotifier = ref.read(
         hospitalMarkerPositionsProvider.notifier,
       );
-      final currentMap = Map<String, LatLng>.from(positionsNotifier.state);
-      currentMap[hospital['place_id']] = hospitalPosition;
+      final currentMap = Map<String, HospitalInfo>.from(
+        positionsNotifier.state,
+      );
+      currentMap[hospital['place_id']] = HospitalInfo(
+        name: hospitalName,
+        position: hospitalPosition,
+      );
       positionsNotifier.state = currentMap;
 
       markerSet.add(marker);
@@ -157,7 +165,7 @@ class MapController {
 
   void moveToCurrentLocation() {
     if (mapController != null) {
-      mapController!.animateCamera(
+      mapController?.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(target: currentPosition, zoom: 15.0),
         ),

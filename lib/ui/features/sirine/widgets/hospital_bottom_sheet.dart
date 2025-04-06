@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
+import 'package:founded_ninu/domain/entities/locked_address.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_initial_position_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_starttime_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
@@ -50,22 +53,24 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
         if (markerId != null &&
             currentPosition != null &&
             hospitalMap[markerId] != null) {
-          final hospitalPosition = hospitalMap[markerId]!;
+          final hospitalPosition = hospitalMap[markerId]?.position;
 
           try {
-            final data = await MapUsecase().fetchRoute(
-              LatLng(currentPosition.latitude, currentPosition.longitude),
-              hospitalPosition,
-              mode: next,
-            );
+            if (hospitalPosition != null) {
+              final data = await MapUsecase().fetchRoute(
+                LatLng(currentPosition.latitude, currentPosition.longitude),
+                hospitalPosition,
+                mode: next,
+              );
 
-            final info = DestinationInfo(
-              distance: data['distance'],
-              duration: data['duration'],
-            );
+              final info = DestinationInfo(
+                distance: data['distance'],
+                duration: data['duration'],
+              );
 
-            ref.read(selectedDestinationInfoProvider.notifier).state = info;
-            // ref.read(selectedDestinationProvider.notifier).state =
+              ref.read(selectedDestinationInfoProvider.notifier).state = info;
+              // ref.read(selectedDestinationProvider.notifier).state =
+            }
             //     hospitalPosition;
           } catch (e) {
             debugPrint("Failed to fetch new route on mode change: $e");
@@ -77,43 +82,46 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final markerId = ref.watch(selectedMarkerIdProvider);
-    final currentPosition = ref.watch(locationProvider);
-    String mode = ref.watch(travelModeProvider);
-    final hospitalMap = ref.watch(hospitalMarkerPositionsProvider);
-    final destinationInfo = ref.watch(selectedDestinationInfoProvider);
-    // print("DESTINATION INFO : ${destinationInfo?.distance ?? "no distance"}");
-    // print("MODE : $mode");
-
     // Listen for travel mode changes
     ref.listen<String>(travelModeProvider, (prev, next) async {
       final markerId = ref.read(selectedMarkerIdProvider);
       final currentPosition = ref.read(locationProvider);
       final hospitalMap = ref.read(hospitalMarkerPositionsProvider);
+      final hospitalInfo = hospitalMap[markerId];
       // print("MODE CHANGE TO $mode");
       if (markerId != null &&
           currentPosition != null &&
-          hospitalMap[markerId] != null) {
-        final hospitalPosition = hospitalMap[markerId]!;
-
+          hospitalInfo?.position != null) {
         try {
-          final data = await MapUsecase().fetchRoute(
-            LatLng(currentPosition.latitude, currentPosition.longitude),
-            hospitalPosition,
-            mode: next,
-          );
-
-          final info = DestinationInfo(
-            distance: data['distance'],
-            duration: data['duration'],
-          );
-          ref.read(selectedDestinationInfoProvider.notifier).state = info;
+          LatLng? hospitalPosition = hospitalInfo?.position;
+          // String? hospitalName = hospitalInfo?.name;
+          if (hospitalPosition != null) {
+            final data = await MapUsecase().fetchRoute(
+              LatLng(currentPosition.latitude, currentPosition.longitude),
+              hospitalPosition,
+              mode: next,
+            );
+            final info = DestinationInfo(
+              distance: data['distance'],
+              duration: data['duration'],
+            );
+            ref.read(selectedDestinationInfoProvider.notifier).state = info;
+          }
         } catch (e) {
           debugPrint("Failed to fetch new route on mode change: $e");
         }
       }
     });
+
+    final width = MediaQuery.of(context).size.width;
+    final markerId = ref.watch(selectedMarkerIdProvider);
+    final currentPosition = ref.watch(locationProvider);
+    String mode = ref.watch(travelModeProvider);
+    final destinationInfo = ref.watch(selectedDestinationInfoProvider);
+    final hospitalMap = ref.watch(hospitalMarkerPositionsProvider);
+
+    // print("DESTINATION INFO : ${destinationInfo?.distance ?? "no distance"}");
+    // print("MODE : $mode");
 
     return DraggableScrollableSheet(
       expand: false,
@@ -190,12 +198,27 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                   //fetch the data if not hd been set.
                                   debugPrint(markerId);
 
+                                  //Get Current Address
+                                  final placemarks = await ref.read(
+                                    placemarkProvider.future,
+                                  );
+                                  final currentAddress =
+                                      placemarks.isNotEmpty
+                                          ? placemarks.first.name ?? "Unknown"
+                                          : "Unknown";
+
+                                  //Get Current Hospital
                                   final hospitalPosition =
-                                      hospitalMap[markerId];
-                                  if (hospitalPosition != null) {
+                                      hospitalMap[markerId]?.position;
+                                  final hospitalName =
+                                      hospitalMap[markerId]?.name;
+
+                                  //Get Route and Destination Info
+                                  if (hospitalPosition != null &&
+                                      currentPosition != null) {
                                     final data = await MapUsecase().fetchRoute(
                                       LatLng(
-                                        currentPosition!.latitude,
+                                        currentPosition.latitude,
                                         currentPosition.longitude,
                                       ),
                                       hospitalPosition,
@@ -205,6 +228,18 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                       distance: data['distance'],
                                       duration: data['duration'],
                                     );
+
+                                    //Get Current Time
+                                    if (ref.read(lockedStartTimeProvider) ==
+                                        null) {
+                                      ref
+                                          .read(
+                                            lockedStartTimeProvider.notifier,
+                                          )
+                                          .state = DateTime.now();
+                                    }
+
+                                    //Set Destination
                                     ref
                                         .read(
                                           selectedDestinationInfoProvider
@@ -216,6 +251,28 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                           selectedDestinationProvider.notifier,
                                         )
                                         .state = hospitalPosition;
+
+                                    // Lock the initial and final position
+                                    ref
+                                        .read(
+                                          lockedDestinationProvider.notifier,
+                                        )
+                                        .state = LockedAddress(
+                                      name: hospitalName ?? "Unknown",
+                                      position: hospitalPosition,
+                                    );
+                                    ref
+                                        .read(
+                                          lockedInitialPositionProvider
+                                              .notifier,
+                                        )
+                                        .state = LockedAddress(
+                                      name: currentAddress,
+                                      position: LatLng(
+                                        currentPosition.latitude,
+                                        currentPosition.longitude,
+                                      ),
+                                    );
                                   }
 
                                   ref.read(isLoadingProvider.notifier).state =
@@ -237,18 +294,34 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
 
                                   //Pop the current Bottom sheet
                                   if (context.mounted) context.pop();
-
-                                  //Open the new bottom sheet
-                                  final scaffoldKey = ref.read(
-                                    scaffoldKeyProvider,
-                                  );
-                                  scaffoldKey.currentState?.showBottomSheet(
-                                    (context) => FirstStartModeBottomSheet(),
-                                    backgroundColor: colorScheme.primary,
-                                  );
-                                  ref
-                                      .read(isBottomSheetOpenProvider.notifier)
-                                      .state = true;
+                                  Future.microtask(() {
+                                    ref
+                                        .read(
+                                          activeBottomSheetProvider.notifier,
+                                        )
+                                        .state = ActiveBottomSheet.firstStart;
+                                    //Open the new bottom sheet
+                                    final scaffoldKey = ref.read(
+                                      scaffoldKeyProvider,
+                                    );
+                                    scaffoldKey.currentState
+                                        ?.showBottomSheet(
+                                          (context) =>
+                                              FirstStartModeBottomSheet(),
+                                          backgroundColor: colorScheme.primary,
+                                        )
+                                        .closed
+                                        .then(
+                                          (_) =>
+                                              ref
+                                                  .read(
+                                                    activeBottomSheetProvider
+                                                        .notifier,
+                                                  )
+                                                  .state = ActiveBottomSheet
+                                                      .none,
+                                        );
+                                  });
                                 },
                                 icon: const Icon(Icons.navigation_rounded),
                                 label: const Text("Start"),

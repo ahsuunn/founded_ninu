@@ -11,8 +11,8 @@ class MapFloatingButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final travelMode = ref.watch(travelModeProvider);
-    final isBottomSheetOpen = ref.watch(isBottomSheetOpenProvider);
-    print("Bottom Sheet Opens $isBottomSheetOpen");
+    final activeBottomSheet = ref.watch(activeBottomSheetProvider);
+    print("Active Bottom Sheet: $activeBottomSheet");
 
     return Stack(
       children: [
@@ -20,7 +20,7 @@ class MapFloatingButtons extends ConsumerWidget {
           alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.only(
-              bottom: isBottomSheetOpen ? 260 : 130,
+              bottom: (activeBottomSheet != ActiveBottomSheet.none) ? 260 : 130,
               right: 20,
             ),
             child: FloatingActionButton(
@@ -32,10 +32,11 @@ class MapFloatingButtons extends ConsumerWidget {
         ),
 
         // Motorcycle Button
-        isBottomSheetOpen
+        (activeBottomSheet == ActiveBottomSheet.hospital)
             ? AnimatedPositioned(
               duration: const Duration(milliseconds: 200),
-              bottom: isBottomSheetOpen ? 260 : 0,
+              bottom:
+                  (activeBottomSheet == ActiveBottomSheet.hospital) ? 260 : 0,
               left: 20,
               child: FloatingActionButton(
                 backgroundColor:
@@ -53,10 +54,11 @@ class MapFloatingButtons extends ConsumerWidget {
             : SizedBox(),
 
         // Car Button
-        isBottomSheetOpen
+        (activeBottomSheet == ActiveBottomSheet.hospital)
             ? AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
-              bottom: isBottomSheetOpen ? 330 : 0,
+              bottom:
+                  (activeBottomSheet == ActiveBottomSheet.hospital) ? 330 : 0,
               left: 20,
               child: FloatingActionButton(
                 backgroundColor:

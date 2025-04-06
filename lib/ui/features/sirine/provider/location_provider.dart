@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
 import 'package:geocoding/geocoding.dart';
@@ -20,7 +21,7 @@ class LocationNotifier extends StateNotifier<Position?> {
       Position position = await locationService.getCurrentLocation();
       state = position; // Update global state
     } catch (e) {
-      print("Error fetching location: $e");
+      debugPrint("Error fetching location: $e");
     }
   }
 
