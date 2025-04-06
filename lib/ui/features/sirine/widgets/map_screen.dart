@@ -6,6 +6,7 @@ import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provide
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_view.dart';
@@ -55,7 +56,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
       ref.listen<LatLng?>(selectedDestinationProvider, (prev, next) {
         final userPos = ref.read(locationProvider);
-        print("LISTENING TO SELECTED DESTINATION PROVIDER");
         if (userPos != null && next != null) {
           updateRoutePolyline(
             ref,
@@ -77,7 +77,25 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         if (ref.watch(isLoadingProvider))
           ModalBarrier(dismissible: false, color: Color(0x80000000)),
         if (ref.watch(isLoadingProvider))
-          const Center(child: CircularProgressIndicator()),
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sending Permission",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
+                Text(
+                  "Please wait a moment...",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

@@ -12,6 +12,7 @@ import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -224,13 +225,15 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                     const Duration(seconds: 2),
                                   );
 
+                                  OverlayPromptWidget(
+                                    message:
+                                        "Permission has been allowed, proceed to activate Ninu?",
+                                    buttonText: "Activate",
+                                    onPressed: (() {}),
+                                  );
+
                                   ref.read(isLoadingProvider.notifier).state =
                                       false;
-
-                                  // Lock the destination (if needed)
-                                  // await MapController().startNavigationFlow(
-                                  //   ref,
-                                  // );
 
                                   //Pop the current Bottom sheet
                                   if (context.mounted) context.pop();
