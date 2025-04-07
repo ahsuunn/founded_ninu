@@ -5,7 +5,7 @@ class UserEntity {
   final String phoneNumber;
   final String role;
   final String fullName;
-  final String dateOfBirth;
+  final DateTime? dateOfBirth;
   final String gender;
   final String nik;
   final String? medicalHistory; // Only for patients

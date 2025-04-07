@@ -1,24 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
+import 'package:founded_ninu/ui/features/home/widgets/map_snippet.dart';
 import 'package:founded_ninu/ui/features/home/widgets/medicalguide_list.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 import 'package:founded_ninu/ui/features/home/widgets/videocall_container.dart';
+import 'package:go_router/go_router.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.userName});
-
-  final String userName;
+class HomePage extends ConsumerStatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String fullname = '';
+
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userProvider);
+
     return Scaffold(
-      appBar: MyAppBar(userName: "Ahsan", currentPage: "home"),
+      appBar: userAsync.when(
+        data:
+            (user) => MyAppBar(
+              userName: (user?.fullName ?? "No Name"),
+              currentPage: "home",
+            ),
+        loading: () => MyAppBar(userName: "", currentPage: "home"),
+        error: (err, stack) => MyAppBar(userName: "Error", currentPage: "home"),
+      ),
       body: Column(
         children: [
           SizedBox(height: 24),
@@ -100,67 +119,9 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 10),
 
                               // MAP
-                              Container(
-                                width: double.infinity,
-                                height: 175,
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color:
-                                      Colors
-                                          .white, // Change this to match the design
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      blurRadius: 5,
-                                      spreadRadius: 2,
-                                      offset: Offset(2, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Icon Placeholder
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Icon(
-                                        Icons.location_pin,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10), // Spacing
-                                    // Text Placeholder
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Current location",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[700],
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Container(
-                                          width: 200, // Adjust width as needed
-                                          height: 16,
-                                          color:
-                                              Colors
-                                                  .grey[300], // Placeholder effect
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                              GestureDetector(
+                                onTap: () => context.pushNamed("sirine"),
+                                child: MapSnippet(),
                               ),
                               SizedBox(height: 20),
                               //First Aid Guide

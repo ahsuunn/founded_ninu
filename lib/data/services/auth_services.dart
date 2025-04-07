@@ -15,19 +15,17 @@ class AuthService {
       );
       return true; // Success
     } catch (e) {
-      print("Sign up error: $e");
       return false; // Failure
     }
   }
 
   // 🔹 Log in (Returns `true` on success, `false` on failure)
-  Future<bool> signIn(String email, String password) async {
+  Future<String> signIn(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return true; // Success
+      return "Success"; // Success
     } catch (e) {
-      print("Sign in error: $e");
-      return false; // Failure
+      return e.toString(); // Failure
     }
   }
 

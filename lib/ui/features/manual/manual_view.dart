@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 
@@ -40,8 +42,11 @@ class ManualPage extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userProvider);
+
     return Scaffold(
+
       appBar: MyAppBar(userName: "Ahsan", currentPage: "manual"),
       body: Column(
         children: [
@@ -207,6 +212,7 @@ class GuideStepCard extends StatelessWidget {
           ],
         ),
       ),
+
     );
   }
 }
