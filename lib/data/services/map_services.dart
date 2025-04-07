@@ -6,26 +6,40 @@ class GoogleMapsService {
   final String apiKey = AppKeys.mapsApiKey;
 
   Future<List<dynamic>> getNearbyHospitals(double lat, double lng) async {
-    final String url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+    // New Places API endpoint
+    final String url = 'https://places.googleapis.com/v1/places:searchNearby';
 
     try {
-      Response response = await _dio.get(
+      // The new API requires a POST request with a JSON body
+      Response response = await _dio.post(
         url,
-        queryParameters: {
-          'location': '$lat,$lng',
-          'radius': 5000, // Search within 5km
-          'type': 'hospital',
-          'key': apiKey,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Goog-Api-Key': apiKey,
+            'X-Goog-FieldMask':
+                'places.displayName,places.formattedAddress,places.location,places.id',
+          },
+        ),
+        data: {
+          'locationRestriction': {
+            'circle': {
+              'center': {'latitude': lat, 'longitude': lng},
+              'radius': 5000.0, // 5km in meters
+            },
+          },
+          'includedTypes': ['hospital'],
         },
       );
 
       if (response.statusCode == 200) {
-        return response.data['results']; // List of hospitals
+        // Structure of response has changed in the new API
+        return response.data['places'] ?? []; // List of hospitals
       } else {
-        throw Exception('Failed to load hospitals');
+        throw Exception('Failed to load hospitals: ${response.statusCode}');
       }
     } catch (e) {
+      print('Error fetching nearby hospitals: $e');
       return [];
     }
   }

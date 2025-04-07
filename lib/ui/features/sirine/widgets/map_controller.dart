@@ -78,23 +78,22 @@ class MapController {
     );
 
     for (var hospital in hospitals) {
-      final hospitalName = hospital['name'] ?? "";
+      final hospitalName = hospital['displayName']?['text'] ?? "";
       if (!MapUsecase().isHospital(hospitalName)) continue;
 
-      final hospitalLat = hospital['geometry']['location']['lat'];
-      final hospitalLng = hospital['geometry']['location']['lng'];
+      final hospitalLat = hospital['location']?['latitude'];
+      final hospitalLng = hospital['location']?['longitude'];
       final hospitalPosition = LatLng(hospitalLat, hospitalLng);
-
       final marker = Marker(
-        markerId: MarkerId(hospital['place_id']),
+        markerId: MarkerId(hospital['id'] ?? hospitalName),
         position: hospitalPosition,
         icon: customIcon,
         infoWindow: InfoWindow(
           title: hospitalName,
-          snippet: hospital['vicinity'],
+          snippet: hospital['formattedAddress'],
         ),
         onTap: () async {
-          final placeId = hospital['place_id'];
+          final placeId = hospital['id'];
           final mode = ref.read(travelModeProvider);
           final data = await MapUsecase().fetchRoute(
             currentPosition,
@@ -120,7 +119,7 @@ class MapController {
                 ?.showBottomSheet(
                   (context) => HospitalBottomSheet(
                     hospitalName: hospitalName,
-                    hospitalVicinity: hospital['vicinity'],
+                    hospitalVicinity: hospital['formattedAddress'],
                     onSetDirection: () async {
                       final updatedData = await MapUsecase().fetchRoute(
                         currentPosition,
@@ -155,8 +154,6 @@ class MapController {
                 ref.watch(lockedDestinationProvider)?.name;
             final activeBottomSheet = ref.watch(activeBottomSheetProvider);
             print(activeBottomSheet);
-            print("LOCKED HOSPITAL NAME: $currentHospitalDestinationName");
-            print("MARKER HOSPITAL NAME: $hospitalName");
             if (currentHospitalDestinationName != null &&
                 currentHospitalDestinationName == hospitalName) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -186,7 +183,7 @@ class MapController {
       final currentMap = Map<String, HospitalInfo>.from(
         positionsNotifier.state,
       );
-      currentMap[hospital['place_id']] = HospitalInfo(
+      currentMap[hospital['id']] = HospitalInfo(
         name: hospitalName,
         position: hospitalPosition,
       );
