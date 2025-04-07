@@ -10,12 +10,12 @@ class HorizontalList extends StatelessWidget {
     {
       "image": "assets/fa.png",
       "title": "CPR",
-      "route": "/medGuide", // Sesuaikan dengan path di router kamu
+      "route": "/cprGuide", // Sesuaikan dengan path di router kamu
     },
     {
       "image": "assets/fa1.png",
       "title": "Bleeding",
-      "route": "/medGuide", // Sesuaikan juga
+      "route": "/bleedingGuide", // Sesuaikan juga
     },
   ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CprMedicalGuidePage extends StatelessWidget {
   const CprMedicalGuidePage({super.key});
@@ -9,16 +10,13 @@ class CprMedicalGuidePage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           'CPR Guide',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -26,8 +24,7 @@ class CprMedicalGuidePage extends StatelessWidget {
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Text(
-            '''
+          child: Text('''
 🚨 First Aid Guide: CPR (Cardiopulmonary Resuscitation)
 
 Kondisi: Korban tidak sadar, tidak bernapas normal, atau tidak bernapas sama sekali.
@@ -47,9 +44,7 @@ Langkah-langkah:
       • Saat berada dekat lokasi, tap “Sirine” untuk mengaktifkan sinyal darurat.
       • Setelah mendapat izin, tap “Activate”, hubungkan perangkat dengan ikon bluetooth, dan nyalakan sirine.
       • Gunakan fitur notifikasi untuk menarik perhatian sekitar dan video call untuk berkomunikasi langsung dengan tenaga medis.
-            ''',
-            style: TextStyle(fontSize: 16, height: 1.6),
-          ),
+            ''', style: TextStyle(fontSize: 16, height: 1.6)),
         ),
       ),
     );

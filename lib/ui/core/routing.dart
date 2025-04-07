@@ -14,10 +14,8 @@ import 'package:founded_ninu/ui/features/messages/messages_view.dart';
 import 'package:founded_ninu/ui/features/profile/profile_view.dart';
 import 'package:founded_ninu/ui/features/sirine/sirine_view.dart';
 
-    
 final appRouterProvider = Provider<GoRouter>((ref) {
   final navigatorKey = ref.watch(navigatorKeyProvider);
-
 
   return GoRouter(
     navigatorKey: navigatorKey,
@@ -54,15 +52,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => SirinePage(),
       ),
       GoRoute(
-      name: "cprmedguide",
-      path: "/medGuide",
-      builder: (context, state) => CprMedicalGuidePage(),
-    ),
-    GoRoute(
-      name: "bleedingmedguide",
-      path: "/medGuide",
-      builder: (context, state) => BleedingMedicalGuidePage(),
-    ),
+        name: "cprmedguide",
+        path: "/cprGuide",
+        builder: (context, state) => CprMedicalGuidePage(),
+      ),
+      GoRoute(
+        name: "bleedingmedguide",
+        path: "/bleedingGuide",
+        builder: (context, state) => BleedingMedicalGuidePage(),
+      ),
 
       ShellRoute(
         builder: (context, state, child) {

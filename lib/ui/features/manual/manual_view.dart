@@ -19,8 +19,14 @@ class ManualPage extends StatelessWidget {
       "title": "You're out of range, get closer to the sirine",
       "image": "assets/manuals/step4.png",
     },
-    {"title": "Tap Sirine once you're in range", "image": "assets/manuals/step5.png"},
-    {"title": "Wait for permission to use sirine", "image": "assets/manuals/step6.png"},
+    {
+      "title": "Tap Sirine once you're in range",
+      "image": "assets/manuals/step5.png",
+    },
+    {
+      "title": "Wait for permission to use sirine",
+      "image": "assets/manuals/step6.png",
+    },
     {"title": "Tap Activate", "image": "assets/manuals/step7.png"},
     {
       "title": "Slide the bluetooth icon to pair NINU",
@@ -42,11 +48,8 @@ class ManualPage extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userProvider);
-
+  Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: MyAppBar(userName: "Ahsan", currentPage: "manual"),
       body: Column(
         children: [
@@ -212,7 +215,6 @@ class GuideStepCard extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BleedingMedicalGuidePage extends StatelessWidget {
   const BleedingMedicalGuidePage({super.key});
@@ -9,16 +10,13 @@ class BleedingMedicalGuidePage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           'Bleeding Guide',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -26,8 +24,7 @@ class BleedingMedicalGuidePage extends StatelessWidget {
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Text(
-            '''
+          child: Text('''
 🩸 First Aid Guide: Pendarahan Parah
 
 Kondisi: Luka besar dengan pendarahan yang terus-menerus.
@@ -45,9 +42,7 @@ Langkah-langkah:
       • Saat mendekati lokasi, tap “Sirine” untuk memulai permintaan bantuan.
       • Setelah mendapat izin, tap “Activate”, sambungkan dengan bluetooth, dan aktifkan sirine.
       • Gunakan ikon notifikasi dan fitur video call untuk mempercepat penanganan dari pihak rumah sakit.
-            ''',
-            style: TextStyle(fontSize: 16, height: 1.6),
-          ),
+            ''', style: TextStyle(fontSize: 16, height: 1.6)),
         ),
       ),
     );
