@@ -3,6 +3,8 @@ import 'package:founded_ninu/ui/core/bottom_navbar.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_2.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_3.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
+import 'package:founded_ninu/ui/features/medGuide/CprMedGuide_view.dart';
+import 'package:founded_ninu/ui/features/medGuide/bleedingMedGuide_view.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
@@ -12,8 +14,10 @@ import 'package:founded_ninu/ui/features/messages/messages_view.dart';
 import 'package:founded_ninu/ui/features/profile/profile_view.dart';
 import 'package:founded_ninu/ui/features/sirine/sirine_view.dart';
 
+    
 final appRouterProvider = Provider<GoRouter>((ref) {
   final navigatorKey = ref.watch(navigatorKeyProvider);
+
 
   return GoRouter(
     navigatorKey: navigatorKey,
@@ -49,6 +53,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: "/sirine",
         builder: (context, state) => SirinePage(),
       ),
+      GoRoute(
+      name: "cprmedguide",
+      path: "/medGuide",
+      builder: (context, state) => CprMedicalGuidePage(),
+    ),
+    GoRoute(
+      name: "bleedingmedguide",
+      path: "/medGuide",
+      builder: (context, state) => BleedingMedicalGuidePage(),
+    ),
 
       ShellRoute(
         builder: (context, state, child) {
