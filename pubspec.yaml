@@ -71,6 +71,18 @@ flutter:
     - assets/ninu.svg
     - assets/logo.png
     - assets/logo.svg
+    - assets/manuals/step1.png
+    - assets/manuals/step2.png
+    - assets/manuals/step3.png
+    - assets/manuals/step4.png
+    - assets/manuals/step5.png
+    - assets/manuals/step6.png
+    - assets/manuals/step7.png
+    - assets/manuals/step8.png
+    - assets/manuals/step9.png
+    - assets/manuals/step10.png
+    - assets/manuals/step11.png
+    - assets/manuals/step12.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

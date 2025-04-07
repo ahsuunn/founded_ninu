@@ -1,5 +1,7 @@
 import 'package:founded_ninu/ui/core/bottom_navbar.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
+import 'package:founded_ninu/ui/features/medGuide/CprMedGuide_view.dart';
+import 'package:founded_ninu/ui/features/medGuide/bleedingMedGuide_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view.dart';
@@ -25,6 +27,16 @@ final GoRouter router = GoRouter(
       name: "manual",
       path: "/manual",
       builder: (context, state) => ManualPage(),
+    ),
+    GoRoute(
+      name: "cprmedguide",
+      path: "/medGuide",
+      builder: (context, state) => CprMedicalGuidePage(),
+    ),
+    GoRoute(
+      name: "bleedingmedguide",
+      path: "/medGuide",
+      builder: (context, state) => BleedingMedicalGuidePage(),
     ),
     GoRoute(
       name: "sirine",

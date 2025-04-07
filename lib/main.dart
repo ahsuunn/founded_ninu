@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.latoTextTheme().copyWith(
           headlineLarge: GoogleFonts.lato(
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
             color: colorScheme.tertiary,
           ),
