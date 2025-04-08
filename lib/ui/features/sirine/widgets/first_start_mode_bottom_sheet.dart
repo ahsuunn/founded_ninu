@@ -191,6 +191,7 @@ class _FirstStartModeBottomSheetState
                   ref.read(lockedInitialPositionProvider.notifier).state = null;
                   ref.read(lockedStartTimeProvider.notifier).state = null;
                   ref.read(routePolylineProvider.notifier).state = {};
+                  context.pop();
                 },
                 icon: Icon(Icons.cancel_outlined, color: colorScheme.tertiary),
               ),
