@@ -126,24 +126,30 @@ class _FirstStartModeBottomSheetState
                               SchedulerBinding.instance.addPostFrameCallback((
                                 _,
                               ) {
-                                ref
+                                final container = ProviderScope.containerOf(
+                                  context,
+                                  listen: false,
+                                );
+
+                                container
                                     .read(activeBottomSheetProvider.notifier)
                                     .state = ActiveBottomSheet.secondStart;
-                                final scaffoldKey = ref.read(
+                                final scaffoldKey = container.read(
                                   scaffoldKeyProvider,
                                 );
-                                scaffoldKey.currentState?.showBottomSheet(
-                                  (context) => SecondBottomSheet(),
-                                  backgroundColor: colorScheme.primary,
-                                );
-                                // .closed
-                                // .then((_) {
-                                //   ref
-                                //       .read(
-                                //         activeBottomSheetProvider.notifier,
-                                //       )
-                                //       .state = ActiveBottomSheet.none;
-                                // });
+                                scaffoldKey.currentState
+                                    ?.showBottomSheet(
+                                      (context) => SecondBottomSheet(),
+                                      backgroundColor: colorScheme.primary,
+                                    )
+                                    .closed
+                                    .then((_) {
+                                      container
+                                          .read(
+                                            activeBottomSheetProvider.notifier,
+                                          )
+                                          .state = ActiveBottomSheet.none;
+                                    });
                               });
                             }),
                             icon: Icon(Icons.notifications_active, size: 38),

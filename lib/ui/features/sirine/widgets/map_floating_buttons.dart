@@ -20,7 +20,12 @@ class MapFloatingButtons extends ConsumerWidget {
           alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.only(
-              bottom: (activeBottomSheet != ActiveBottomSheet.none) ? 260 : 130,
+              bottom:
+                  (activeBottomSheet != ActiveBottomSheet.none)
+                      ? (activeBottomSheet != ActiveBottomSheet.secondStart)
+                          ? 260
+                          : 320
+                      : 130,
               right: 20,
             ),
             child: FloatingActionButton(

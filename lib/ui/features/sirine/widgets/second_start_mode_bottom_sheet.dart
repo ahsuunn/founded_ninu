@@ -144,18 +144,25 @@ class _SecondBottomSheetState extends ConsumerState<SecondBottomSheet> {
                   // context.pop(); // close current
 
                   SchedulerBinding.instance.addPostFrameCallback((_) {
-                    ref.read(activeBottomSheetProvider.notifier).state =
-                        ActiveBottomSheet.firstStart;
-                    final scaffoldKey = ref.read(scaffoldKeyProvider);
-                    scaffoldKey.currentState?.showBottomSheet(
-                      (context) => FirstStartModeBottomSheet(),
-                      backgroundColor: colorScheme.primary,
+                    final container = ProviderScope.containerOf(
+                      context,
+                      listen: false,
                     );
-                    // .closed
-                    // .then((_) {
-                    //   ref.read(activeBottomSheetProvider.notifier).state =
-                    //       ActiveBottomSheet.none;
-                    // });
+
+                    container.read(activeBottomSheetProvider.notifier).state =
+                        ActiveBottomSheet.firstStart;
+                    final scaffoldKey = container.read(scaffoldKeyProvider);
+                    scaffoldKey.currentState
+                        ?.showBottomSheet(
+                          (context) => FirstStartModeBottomSheet(),
+                          backgroundColor: colorScheme.primary,
+                        )
+                        .closed
+                        .then((_) {
+                          container
+                              .read(activeBottomSheetProvider.notifier)
+                              .state = ActiveBottomSheet.none;
+                        });
                   });
                 },
                 child: const Text(
