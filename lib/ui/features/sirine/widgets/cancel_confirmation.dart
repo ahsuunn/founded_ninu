@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/cancel_confirmation_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
@@ -25,6 +26,7 @@ class CancelConfirmationDialog extends ConsumerWidget {
         // Dialog itself
         Center(
           child: AlertDialog(
+            shadowColor: Colors.black,
             backgroundColor: colorScheme.primary,
             title: Text(
               "Are you sure?",
@@ -65,6 +67,8 @@ class CancelConfirmationDialog extends ConsumerWidget {
 
                   // Optionally close bottom sheet
                   context.pop();
+                  ref.watch(activeBottomSheetProvider.notifier).state =
+                      ActiveBottomSheet.none;
                 },
                 child: Text(
                   "Yes",
