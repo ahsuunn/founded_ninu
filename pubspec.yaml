@@ -86,6 +86,7 @@ flutter:
     - assets/assistance.png
     - assets/ninu.svg
     - assets/logo.png
+    - assets/logowtext.png
     - assets/logo.svg
     - assets/splash_screen.png
     - assets/manuals/step1.png
@@ -141,8 +142,8 @@ flutter_launcher_icons:
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 flutter_native_splash:
-  color: "#ffffff" # fallback background color
-  image: assets/logo.png
-  background_image: assets/splash_screen.png
   android: true
   ios: true
+  image: assets/logowtext.png
+  background_image: assets/splash_screen.png
+  color: "#ffffff" # fallback background color

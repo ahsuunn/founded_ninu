@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/cancel_confirmation_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/has_arrived_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/cancel_confirmation.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
@@ -144,6 +146,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             message: "Permission has been allowed, proceed to activate Ninu?",
             buttonText: "Activate",
           ),
+        if (ref.watch(showCancelConfirmationProvider))
+          CancelConfirmationDialog(),
       ],
     );
   }
