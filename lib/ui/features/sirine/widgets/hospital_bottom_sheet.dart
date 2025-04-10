@@ -19,6 +19,7 @@ import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.d
 import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -232,6 +233,16 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
                                 }
 
                                 //Set Destination
+                                final currentPos =
+                                    await Geolocator.getCurrentPosition();
+                                updateRoutePolyline(
+                                  ref,
+                                  LatLng(
+                                    currentPos.latitude,
+                                    currentPos.longitude,
+                                  ),
+                                  hospitalPosition,
+                                );
                                 ref
                                     .read(
                                       selectedDestinationInfoProvider.notifier,

@@ -188,6 +188,7 @@ class _FirstStartModeBottomSheetState
                   ref.read(travelStateModeProvider.notifier).state =
                       TravelStateMode.defaultMode;
                   ref.read(lockedDestinationProvider.notifier).state = null;
+                  ref.read(selectedDestinationProvider.notifier).state = null;
                   ref.read(lockedInitialPositionProvider.notifier).state = null;
                   ref.read(lockedStartTimeProvider.notifier).state = null;
                   ref.read(routePolylineProvider.notifier).state = {};

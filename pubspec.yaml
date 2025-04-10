@@ -34,6 +34,7 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
+  flutter_native_splash: ^2.4.6
   
   # Routing and State Management
   go_router: ^14.8.1
@@ -86,6 +87,7 @@ flutter:
     - assets/ninu.svg
     - assets/logo.png
     - assets/logo.svg
+    - assets/splash_screen.png
     - assets/manuals/step1.png
     - assets/manuals/step2.png
     - assets/manuals/step3.png
@@ -137,3 +139,10 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/logo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+
+flutter_native_splash:
+  color: "#ffffff" # fallback background color
+  image: assets/logo.png
+  background_image: assets/splash_screen.png
+  android: true
+  ios: true

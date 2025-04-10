@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/has_arrived_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
@@ -48,8 +49,32 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
           }
 
-          //Update Polyline
           final chosenDestination = ref.read(selectedDestinationProvider);
+          print("CHOSEN DESTINATION IN LISTENER : $chosenDestination");
+
+          // 🔹 Check arrival
+          if (chosenDestination != null) {
+            final distance = Geolocator.distanceBetween(
+              newLocation.latitude,
+              newLocation.longitude,
+              chosenDestination.latitude,
+              chosenDestination.longitude,
+            );
+
+            final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
+            if (distance < 10) {
+              if (!ref.read(hasArrivedProvider)) {
+                hasArrivedNotifier.state = true; // Just arrived
+                debugPrint("🚀 User has arrived at destination!");
+              }
+            } else {
+              if (ref.read(hasArrivedProvider)) {
+                hasArrivedNotifier.state = false; // No longer at destination
+              }
+            }
+          }
+
+          //Update Polyline
           if (chosenDestination != null) {
             updateRoutePolyline(ref, newLocation, chosenDestination);
           }
@@ -74,14 +99,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         });
       });
 
-      ref.listen<LatLng?>(selectedDestinationProvider, (prev, next) {
-        final userPos = ref.read(locationProvider);
-        if (userPos != null && next != null) {
-          updateRoutePolyline(
-            ref,
-            LatLng(userPos.latitude, userPos.longitude),
-            next,
-          );
+      ref.listen<LatLng?>(selectedDestinationProvider, (prev, next) async {
+        print("UPDATE ROUTE POLYLINE");
+        if (next != null) {
+          final pos = await Geolocator.getCurrentPosition();
+          final userPos = LatLng(pos.latitude, pos.longitude);
+          updateRoutePolyline(ref, userPos, next);
         }
       });
     }

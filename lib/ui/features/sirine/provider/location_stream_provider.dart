@@ -34,7 +34,10 @@ void updateRoutePolyline(
   );
 
   // Set the polyline (maybe just one of them, or both separately)
+  print(pointData);
+  print("FETCHED POINT DATA");
   if (pointData.containsKey('polyline')) {
+    print("GETTING POLYLINE DATA");
     final polyline = Polyline(
       polylineId: const PolylineId('route'),
       points: pointData['polyline'],
@@ -43,5 +46,6 @@ void updateRoutePolyline(
     );
 
     ref.read(routePolylineProvider.notifier).state = {polyline};
+    print("UPDATED POLYLINE");
   }
 }

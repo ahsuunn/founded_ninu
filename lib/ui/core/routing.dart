@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/data/services/auth_provider.dart';
 import 'package:founded_ninu/ui/core/bottom_navbar.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_2.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_3.dart';
@@ -16,10 +17,29 @@ import 'package:founded_ninu/ui/features/sirine/sirine_view.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final navigatorKey = ref.watch(navigatorKeyProvider);
+  final authState = ref.watch(authStateProvider);
 
   return GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: "/signin", // Change initial location to match ShellRoute
+    initialLocation: "/home",
+    redirect: (context, state) {
+      if (authState.isLoading || authState.hasError) return null;
+
+      final user = authState.value;
+      final currentLocation = state.uri.toString(); // fallback for .subloc
+
+      final isLoggingIn = currentLocation == '/signin';
+
+      if (user == null && !isLoggingIn) {
+        return '/signin';
+      }
+
+      if (user != null && isLoggingIn) {
+        return '/home';
+      }
+
+      return null;
+    }, // Change initial location to match ShellRoute
     routes: [
       GoRoute(
         name: "signin",
@@ -69,7 +89,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             name: "home",
-            path: "/home/:username",
+            path: "/home",
             builder: (context, state) {
               return HomePage();
             },
