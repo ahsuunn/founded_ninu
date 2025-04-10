@@ -9,7 +9,7 @@ class BottomNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userProvider);
+    ref.watch(userProvider);
 
     return Scaffold(
       body: child, // The current page

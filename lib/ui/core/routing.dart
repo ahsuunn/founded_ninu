@@ -5,7 +5,7 @@ import 'package:founded_ninu/ui/features/authentication/signup/signup_view_2.dar
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_3.dart';
 import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:founded_ninu/ui/features/medGuide/CprMedGuide_view.dart';
-import 'package:founded_ninu/ui/features/medGuide/bleedingMedGuide_view.dart';
+import 'package:founded_ninu/ui/features/medGuide/bleeding_med_guide_view.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';

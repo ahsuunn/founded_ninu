@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:founded_ninu/ui/features/home/widgets/appbar.dart';
 import 'package:founded_ninu/ui/features/home/widgets/subheader.dart';
 
@@ -169,6 +167,7 @@ class GuideStepCard extends StatelessWidget {
   final String imagePath;
 
   const GuideStepCard({
+    super.key,
     required this.stepNumber,
     required this.title,
     required this.imagePath,

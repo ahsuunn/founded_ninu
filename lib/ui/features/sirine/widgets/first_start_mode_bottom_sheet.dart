@@ -13,12 +13,10 @@ import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_prov
 import 'package:founded_ninu/ui/features/sirine/provider/locked_initial_position_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_starttime_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/large_button_icons.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/second_start_mode_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/timeline_widget.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FirstStartModeBottomSheet extends ConsumerStatefulWidget {
   const FirstStartModeBottomSheet({super.key});

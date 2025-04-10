@@ -17,8 +17,6 @@ import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/first_start_mode_bottom_sheet.dart';
-import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
-import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -52,7 +50,7 @@ class _HospitalBottomSheetState extends ConsumerState<HospitalBottomSheet> {
         final currentPosition = ref.read(locationProvider);
         final hospitalMap = ref.read(hospitalMarkerPositionsProvider);
 
-        print("MODE CHANGE TO $next");
+        // print("MODE CHANGE TO $next");
 
         if (markerId != null &&
             currentPosition != null &&
