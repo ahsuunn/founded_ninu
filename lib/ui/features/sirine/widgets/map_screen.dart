@@ -70,9 +70,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             if (distance < 10) {
               if (!ref.read(hasArrivedProvider)) {
                 hasArrivedNotifier.state = true; // Just arrived
-                if (ref.watch(
-                      activeBottomSheetProvider as ProviderListenable<bool>,
-                    ) !=
+                if (ref.watch(activeBottomSheetProvider) !=
                     ActiveBottomSheet.none) {
                   context.pop();
                 }
