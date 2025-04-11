@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapFloatingButtons extends ConsumerWidget {
   final MapController controller;
@@ -29,9 +32,38 @@ class MapFloatingButtons extends ConsumerWidget {
               right: 20,
             ),
             child: FloatingActionButton(
-              heroTag: "fab1",
+              heroTag: "fab0",
               onPressed: controller.moveToCurrentLocation,
               child: const Icon(Icons.my_location),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom:
+                  (activeBottomSheet != ActiveBottomSheet.none)
+                      ? (activeBottomSheet != ActiveBottomSheet.secondStart)
+                          ? 320
+                          : 400
+                      : 130,
+              right: 20,
+            ),
+            child: FloatingActionButton(
+              heroTag: "fab1",
+              onPressed: () {
+                final destination = ref.read(selectedDestinationProvider);
+                if (destination != null) {
+                  ref
+                      .read(locationProvider.notifier)
+                      .setMockPositionToDestination(destination);
+                  // print("CHANGE ARRIVED");
+                  print(destination);
+                  print(ref.watch(locationProvider));
+                }
+              },
+              child: const Icon(Icons.temple_hindu),
             ),
           ),
         ),

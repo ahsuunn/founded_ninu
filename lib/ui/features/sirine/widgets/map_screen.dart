@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/destination_info.dart';
 import 'package:founded_ninu/domain/use_cases/map_usecase.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/cancel_confirmation_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/has_arrived_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/widgets/arrival_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/cancel_confirmation.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/overlay_permission.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_view.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_floating_buttons.dart';
@@ -63,9 +66,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
 
             final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
+            print(distance);
             if (distance < 10) {
               if (!ref.read(hasArrivedProvider)) {
                 hasArrivedNotifier.state = true; // Just arrived
+                if (ref.watch(
+                      activeBottomSheetProvider as ProviderListenable<bool>,
+                    ) !=
+                    ActiveBottomSheet.none)
+                  context.pop;
+                showBottomSheet(
+                  context: context,
+                  builder: (context) => ArrivalBottomSheet(),
+                );
                 debugPrint("🚀 User has arrived at destination!");
               }
             } else {

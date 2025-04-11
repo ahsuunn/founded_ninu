@@ -98,8 +98,8 @@ class _FirstStartModeBottomSheetState
                             ),
                           ),
                           TimelineWidget(
-                            fromLocation: finalDestination?.name ?? "...",
-                            toLocation: finalInitalPosition?.name ?? "...",
+                            fromLocation: finalInitalPosition?.name ?? "...",
+                            toLocation: finalDestination?.name ?? "...",
                             fromTime: formattedStartTime,
                             toTime: formattedETA,
                           ),

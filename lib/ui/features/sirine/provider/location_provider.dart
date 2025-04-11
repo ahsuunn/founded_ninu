@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/location_services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 final locationProvider = StateNotifierProvider<LocationNotifier, Position?>(
   (ref) => LocationNotifier(),
@@ -25,8 +26,28 @@ class LocationNotifier extends StateNotifier<Position?> {
     }
   }
 
+  void setMockPositionToDestination(LatLng destination) {
+    print("MOCK ACTIVATED");
+    state = Position(
+      latitude: destination.latitude,
+      longitude: destination.longitude,
+      timestamp: DateTime.now(),
+      accuracy: 5,
+      altitude: 0.0,
+      heading: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+      headingAccuracy: 0.0,
+      altitudeAccuracy: 0.0,
+    );
+  }
+
   void refreshLocation() {
     _fetchLocation(); // Refresh location manually
+  }
+
+  void setMockLocation(Position mockPosition) {
+    state = mockPosition;
   }
 }
 

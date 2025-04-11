@@ -45,3 +45,19 @@ void updateRoutePolyline(
     ref.read(routePolylineProvider.notifier).state = {polyline};
   }
 }
+
+final mockLocationStreamProvider = StreamProvider<Position>((ref) async* {
+  final destination = ref.read(selectedDestinationProvider)!;
+  yield Position(
+    latitude: destination.latitude,
+    longitude: destination.longitude,
+    timestamp: DateTime.now(),
+    accuracy: 5,
+    altitude: 0.0,
+    heading: 0.0,
+    speed: 0.0,
+    speedAccuracy: 0.0,
+    headingAccuracy: 0.0,
+    altitudeAccuracy: 0.0,
+  );
+});
