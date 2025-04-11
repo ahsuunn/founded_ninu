@@ -73,8 +73,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 if (ref.watch(
                       activeBottomSheetProvider as ProviderListenable<bool>,
                     ) !=
-                    ActiveBottomSheet.none)
-                  context.pop;
+                    ActiveBottomSheet.none) {
+                  context.pop();
+                }
                 showBottomSheet(
                   context: context,
                   builder: (context) => ArrivalBottomSheet(),
