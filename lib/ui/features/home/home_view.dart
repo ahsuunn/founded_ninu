@@ -136,13 +136,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                               SizedBox(height: 10),
                               // Image(image: AssetImage("assets/fa.png")),
                               HorizontalList(),
-                              SizedBox(height: 15),
+                              SizedBox(height: 16),
 
                               SubHeader(
                                 icon: Icon(
                                   Icons.video_call_outlined,
                                   color: colorScheme.tertiary, // Icon color
-                                  size: 24,
+                                  size: 22,
                                 ),
                                 title: "Video Call Assistance",
                               ),

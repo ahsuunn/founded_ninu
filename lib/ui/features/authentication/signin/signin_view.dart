@@ -90,12 +90,12 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                           String result = await authService.signIn(
                             // emailController.text,
                             // passwordController.text,
-                            "test@example.com",
+                            "a@example.com",
                             "Gitarbolong1910",
                           );
                           // if (submitForm()) {
                           if (result == "Success" && context.mounted) {
-                            context.go('/home/Guest');
+                            context.go('/home');
                           } else {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
