@@ -7,7 +7,7 @@ import 'package:founded_ninu/ui/features/home/home_view.dart';
 import 'package:founded_ninu/ui/features/medGuide/cpr_med_guide_view.dart';
 import 'package:founded_ninu/ui/features/medGuide/bleeding_med_guide_view.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/navigator_provider.dart';
-import 'package:founded_ninu/ui/features/videoCall/videoCall_view.dart';
+import 'package:founded_ninu/ui/features/videoCall/videocall_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/features/authentication/signin/signin_view.dart';
 import 'package:founded_ninu/ui/features/authentication/signup/signup_view_1.dart';

@@ -88,24 +88,24 @@ class _SigninPageState extends ConsumerState<SigninPage> {
 
                         onPressed: () async {
                           String result = await authService.signIn(
-                            // emailController.text,
-                            // passwordController.text,
-                            "a@example.com",
-                            "Gitarbolong1910",
+                            emailController.text,
+                            passwordController.text,
                           );
-                          // if (submitForm()) {
-                          if (result == "Success" && context.mounted) {
-                            context.go('/home');
-                          } else {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(result), // or custom error text
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
+                          if (submitForm()) {
+                            if (result == "Success" && context.mounted) {
+                              context.go('/home');
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      result,
+                                    ), // or custom error text
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             }
-                            // }
                           }
                         },
                         child: Text(

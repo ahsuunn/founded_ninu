@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
-import 'package:founded_ninu/ui/features/sirine/provider/location_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_controller.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapFloatingButtons extends ConsumerWidget {
   final MapController controller;
@@ -15,7 +12,6 @@ class MapFloatingButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final travelMode = ref.watch(travelModeProvider);
     final activeBottomSheet = ref.watch(activeBottomSheetProvider);
-    print("Active Bottom Sheet: $activeBottomSheet");
 
     return Stack(
       children: [

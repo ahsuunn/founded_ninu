@@ -113,7 +113,6 @@ class MapController {
           ref.read(selectedHospitalNameProvider.notifier).state = hospitalName;
           ref.read(selectedHospitalAddressProvider.notifier).state =
               hospital['formattedAddress'];
-          print("FETCHED ADDRESS ${hospital['formattedAddress']}");
           //Current Travel State
           final currentMode = ref.read(travelStateModeProvider);
 
@@ -166,8 +165,7 @@ class MapController {
           } else if (currentMode == TravelStateMode.startMode) {
             final currentHospitalDestinationName =
                 ref.watch(lockedDestinationProvider)?.name;
-            final activeBottomSheet = ref.watch(activeBottomSheetProvider);
-            print(activeBottomSheet);
+            ref.watch(activeBottomSheetProvider);
             if (currentHospitalDestinationName != null &&
                 currentHospitalDestinationName == hospitalName) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -206,117 +204,6 @@ class MapController {
       markerSet.add(marker);
       markers.state = {...markerSet};
     }
-    // Add mock hospital for testing arrival (within 10 meters)
-    final mockLatLng = LatLng(
-      -6.877053,
-      107.614689, // ~5.5 meters north
-    );
-    final mockMarker = Marker(
-      markerId: MarkerId("mock_hospital"),
-      position: mockLatLng,
-      icon: customIcon,
-      infoWindow: InfoWindow(title: "Mock Hospital", snippet: "Test Location"),
-      onTap: () async {
-        final data = await MapUsecase().fetchRoute(
-          currentPosition,
-          mockLatLng,
-          mode: ref.read(travelModeProvider),
-        );
-
-        ref
-            .read(selectedDestinationInfoProvider.notifier)
-            .state = DestinationInfo(
-          distance: data['distance'],
-          duration: data['duration'],
-        );
-
-        ref.read(selectedMarkerIdProvider.notifier).state = "mock_hospital";
-        ref.read(selectedHospitalNameProvider.notifier).state = "Mock Hospital";
-        ref.read(selectedHospitalAddressProvider.notifier).state =
-            "Mock Address";
-
-        final currentMode = ref.read(travelStateModeProvider);
-        final scaffoldKey = ref.read(scaffoldKeyProvider);
-
-        if (currentMode == TravelStateMode.defaultMode) {
-          ref.read(activeBottomSheetProvider.notifier).state =
-              ActiveBottomSheet.hospital;
-
-          scaffoldKey.currentState
-              ?.showBottomSheet(
-                (context) => HospitalBottomSheet(
-                  hospitalName: "Mock Hospital",
-                  hospitalVicinity: "Test Location",
-                  onSetDirection: () async {
-                    final updatedData = await MapUsecase().fetchRoute(
-                      currentPosition,
-                      mockLatLng,
-                      mode: ref.read(travelModeProvider),
-                    );
-                    ref
-                        .read(selectedDestinationInfoProvider.notifier)
-                        .state = DestinationInfo(
-                      distance: updatedData['distance'],
-                      duration: updatedData['duration'],
-                    );
-                    ref.read(selectedDestinationProvider.notifier).state =
-                        mockLatLng;
-
-                    final currentPos = await Geolocator.getCurrentPosition();
-                    updateRoutePolyline(
-                      ref,
-                      LatLng(currentPos.latitude, currentPos.longitude),
-                      mockLatLng,
-                    );
-                  },
-                ),
-                backgroundColor: colorScheme.primary,
-              )
-              .closed
-              .then((_) {
-                ref.read(activeBottomSheetProvider.notifier).state =
-                    ActiveBottomSheet.none;
-                ref.read(selectedMarkerIdProvider.notifier).state = null;
-              });
-        } else if (currentMode == TravelStateMode.startMode) {
-          final currentHospitalDestinationName = "Mock";
-          final activeBottomSheet = ref.watch(activeBottomSheetProvider);
-          print(activeBottomSheet);
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            ref.read(activeBottomSheetProvider.notifier).state =
-                ActiveBottomSheet.firstStart;
-            //Open the new bottom sheet
-            final scaffoldKey = ref.read(scaffoldKeyProvider);
-            scaffoldKey.currentState
-                ?.showBottomSheet(
-                  (context) => FirstStartModeBottomSheet(),
-                  backgroundColor: colorScheme.primary,
-                )
-                .closed
-                .then(
-                  (_) =>
-                      ref.read(activeBottomSheetProvider.notifier).state =
-                          ActiveBottomSheet.none,
-                );
-          });
-        }
-      },
-    );
-
-    // Add mock to hospital position list
-    final positionsNotifier = ref.read(
-      hospitalMarkerPositionsProvider.notifier,
-    );
-    positionsNotifier.state = {
-      ...positionsNotifier.state,
-      "mock_hospital": HospitalInfo(
-        name: "Mock Hospital",
-        position: mockLatLng,
-      ),
-    };
-
-    // Add to marker set
-    markerSet.add(mockMarker);
     markers.state = {...markerSet};
   }
 

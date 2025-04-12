@@ -58,7 +58,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           }
 
           final chosenDestination = ref.read(selectedDestinationProvider);
-          print("CHOSEN DESTINATION IN LISTENER : $chosenDestination");
 
           // 🔹 Check arrival
           if (chosenDestination != null) {
@@ -70,7 +69,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
 
             final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
-            print("DISTANCE: $distance");
             if (distance < 10) {
               if (!ref.read(hasArrivedProvider)) {
                 if (ref.watch(activeBottomSheetProvider) !=
@@ -124,7 +122,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       });
 
       ref.listen<LatLng?>(selectedDestinationProvider, (prev, next) async {
-        print("UPDATE ROUTE POLYLINE");
         if (next != null) {
           final pos = await Geolocator.getCurrentPosition();
           final userPos = LatLng(pos.latitude, pos.longitude);

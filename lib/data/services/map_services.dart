@@ -39,7 +39,6 @@ class GoogleMapsService {
         throw Exception('Failed to load hospitals: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching nearby hospitals: $e');
       return [];
     }
   }

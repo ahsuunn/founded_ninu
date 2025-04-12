@@ -58,6 +58,7 @@ class _RadiatingSirineIconState extends State<RadiatingSirineIcon>
                   height: 120 * _scaleAnimation.value,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
+                    // ignore: deprecated_member_use
                     color: Colors.red.withOpacity(_opacityAnimation.value),
                   ),
                 );

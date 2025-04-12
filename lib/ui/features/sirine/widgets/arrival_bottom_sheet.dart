@@ -11,7 +11,6 @@ class ArrivalBottomSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hospitalName = ref.watch(selectedHospitalNameProvider);
     final hospitalAddress = ref.watch(selectedHospitalAddressProvider);
-    print("DISPLAY ADDRESS $hospitalAddress");
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,

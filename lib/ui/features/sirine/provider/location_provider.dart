@@ -27,7 +27,6 @@ class LocationNotifier extends StateNotifier<Position?> {
   }
 
   void setMockPositionToDestination(LatLng destination) {
-    print("MOCK ACTIVATED");
     state = Position(
       latitude: destination.latitude,
       longitude: destination.longitude,
