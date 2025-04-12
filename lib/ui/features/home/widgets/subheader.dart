@@ -12,7 +12,7 @@ class SubHeader extends StatelessWidget {
     return Row(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(6), // Padding around the icon
+          padding: EdgeInsets.all(8), // Padding around the icon
           decoration: BoxDecoration(
             color: colorScheme.secondary, // Background color of the box
             shape: BoxShape.circle, // Makes it a circle
@@ -20,7 +20,14 @@ class SubHeader extends StatelessWidget {
           child: icon,
         ),
         SizedBox(width: 8),
-        Text(title, style: Theme.of(context).textTheme.headlineLarge),
+        Text(
+          title,
+          style: TextStyle(
+            color: colorScheme.tertiary,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
       ],
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/auth_provider.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:founded_ninu/ui/features/authentication/widgets/LabeledTextField.dart';
+import 'package:founded_ninu/ui/features/authentication/widgets/signin_textfield.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/rowlogo.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,13 +11,19 @@ final formKeyProvider = Provider<GlobalKey<FormState>>(
   (ref) => GlobalKey<FormState>(),
 );
 
-class SigninPage extends ConsumerWidget {
-  SigninPage({super.key});
+class SigninPage extends ConsumerStatefulWidget {
+  const SigninPage({super.key});
+
+  @override
+  ConsumerState<SigninPage> createState() => _SigninPageState();
+}
+
+class _SigninPageState extends ConsumerState<SigninPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final formKey = ref.watch(formKeyProvider); // Get the form key
     bool submitForm() {
       if (formKey.currentState!.validate()) {
@@ -53,14 +59,14 @@ class SigninPage extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: 12),
-                    LabeledTextField(
+                    SignInTextField(
                       width: textFieldWidth,
                       label: "Email",
                       hintText: "Masukkan email anda",
                       controller: emailController,
                     ),
                     const SizedBox(height: 12),
-                    LabeledTextField(
+                    SignInTextField(
                       width: textFieldWidth,
                       label: "Password",
                       hintText: "Masukkan kata sandi",
@@ -81,13 +87,24 @@ class SigninPage extends ConsumerWidget {
                         ),
 
                         onPressed: () async {
-                          bool success = await authService.signIn(
+                          String result = await authService.signIn(
                             emailController.text,
                             passwordController.text,
                           );
                           if (submitForm()) {
-                            if (success && context.mounted) {
-                              context.go('/home/Guest');
+                            if (result == "Success" && context.mounted) {
+                              context.go('/home');
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      result,
+                                    ), // or custom error text
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             }
                           }
                         },

@@ -31,16 +31,31 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
+  flutter_native_splash: ^2.4.6
+  
+  # Routing and State Management
   go_router: ^14.8.1
+  flutter_riverpod: ^2.6.1
+  
+  # Firebase
   cloud_firestore: ^5.6.5
   firebase_core: ^3.12.1
   firebase_auth: ^5.5.1
-  flutter_riverpod: ^2.6.1
   intl: ^0.20.2
+
+  # Maps integration
+  google_maps_flutter_android: ^2.16.0 # Google map display
+  geolocator: ^13.0.4 # Current location
+  google_maps_flutter: ^2.12.0
+  flutter_polyline_points: ^2.1.0 # Drawing Routes
+  permission_handler: ^11.4.0 # Requesting location permissions
+  geocoding: ^3.0.0 # Convert address to coordinate
+  dio: ^5.8.0+1
+
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -70,8 +85,23 @@ flutter:
     - assets/fa1.png
     - assets/assistance.png
     - assets/ninu.svg
+    - assets/overlay.png
     - assets/logo.png
+    - assets/logowtext.png
     - assets/logo.svg
+    - assets/splash_screen.png
+    - assets/manuals/step1.png
+    - assets/manuals/step2.png
+    - assets/manuals/step3.png
+    - assets/manuals/step4.png
+    - assets/manuals/step5.png
+    - assets/manuals/step6.png
+    - assets/manuals/step7.png
+    - assets/manuals/step8.png
+    - assets/manuals/step9.png
+    - assets/manuals/step10.png
+    - assets/manuals/step11.png
+    - assets/manuals/step12.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -105,3 +135,16 @@ flutter:
     
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+flutter_native_splash:
+  android: true
+  ios: true
+  image: assets/logowtext.png
+  background_image: assets/splash_screen.png
+  color: "#ffffff" # fallback background color

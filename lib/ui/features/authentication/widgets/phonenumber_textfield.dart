@@ -34,23 +34,10 @@ class PhonenumberTextfield extends StatelessWidget {
         const SizedBox(height: 5),
         SizedBox(
           width: width,
-          height: 50,
           child: Row(
             children: [
-              Container(
-                width: width * 0.2,
-                height: 50, // Set height to match TextField
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: colorScheme.secondary,
-                ),
-                child: const Text(
-                  "+62",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ),
               Expanded(
+                flex: 3,
                 child: TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {

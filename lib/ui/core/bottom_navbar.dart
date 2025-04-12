@@ -9,7 +9,7 @@ class BottomNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userProvider);
+    ref.watch(userProvider);
 
     return Scaffold(
       body: child, // The current page
@@ -31,17 +31,9 @@ class BottomNavBar extends ConsumerWidget {
             ),
             currentIndex: _getCurrentIndex(context),
             onTap: (index) {
-              final username = userAsync.when(
-                data:
-                    (user) =>
-                        user?.username ??
-                        'Guest', // Use fetched username or default
-                loading: () => 'Loading...', // Placeholder while loading
-                error: (err, stack) => 'Error', // Handle error case
-              );
               switch (index) {
                 case 0:
-                  context.go('/home/$username');
+                  context.go('/home');
                   break;
                 case 1:
                   context.go('/messages');

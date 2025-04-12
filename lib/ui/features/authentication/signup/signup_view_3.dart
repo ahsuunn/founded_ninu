@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/core/default_pushpage_appbar.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/state/birthdate_provider.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/state/provider.dart';
-import 'package:founded_ninu/ui/features/authentication/signup/state/signup_provider.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/provider/birthdate_provider.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/provider/provider.dart';
+import 'package:founded_ninu/ui/features/authentication/signup/provider/signup_provider.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/birthdate_picker.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/enum_picker.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/gender_picker.dart';
@@ -51,25 +52,10 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
     final double textFieldWidth = MediaQuery.of(context).size.width * 0.75;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading:
-            false, // Prevents Flutter from adding the default back button
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0, top: 8),
-          child: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.black,
-              size: 28,
-            ),
-            onPressed: () => context.pop(), // Custom back button behavior
-          ),
-        ),
-      ),
-
-      body: SingleChildScrollView(
-        child: Center(
-          child: Form(
+      appBar: DefaultPushpageAppbar(),
+      body: ListView(
+        children: [
+          Form(
             key: formKey,
             child: Column(
               children: [
@@ -82,7 +68,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                         (role == "Pasien")
                             ? "Biodata Pasien"
                             : "Biodata Petugas Medis",
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 20),
                       ),
 
                       SizedBox(width: 8),
@@ -90,7 +76,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                         (role == "Pasien")
                             ? Icons.face
                             : Icons.medical_services_outlined,
-                        size: 32,
+                        size: 28,
                       ),
                     ],
                   ),
@@ -258,7 +244,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
