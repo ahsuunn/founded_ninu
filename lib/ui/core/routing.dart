@@ -27,15 +27,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       if (authState.isLoading || authState.hasError) return null;
 
       final user = authState.value;
-      final currentLocation = state.uri.toString(); // fallback for .subloc
+      final location = state.uri.toString();
 
-      final isLoggingIn = currentLocation == '/signin';
+      final unauthenticatedAllowedRoutes = [
+        '/signin',
+        '/signup1',
+        '/signup2',
+        '/signup3',
+      ];
 
-      if (user == null && !isLoggingIn) {
+      final isAllowedForUnauthenticated = unauthenticatedAllowedRoutes.contains(
+        location,
+      );
+
+      if (user == null && !isAllowedForUnauthenticated) {
         return '/signin';
       }
 
-      if (user != null && isLoggingIn) {
+      if (user != null && location == '/signin') {
         return '/home';
       }
 

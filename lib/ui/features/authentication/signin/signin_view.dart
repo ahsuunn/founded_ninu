@@ -119,24 +119,28 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       ),
                     ),
                     SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Belum punya akun? ",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        GestureDetector(
-                          onTap: () => context.goNamed('signup1'),
-                          child: Text(
-                            "Daftar",
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontSize: 16,
+                    Material(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Belum punya akun? ",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              if (context.mounted) context.go('/signup1');
+                            },
+                            child: Text(
+                              "Daftar",
+                              style: TextStyle(
+                                color: colorScheme.primary,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

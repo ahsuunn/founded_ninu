@@ -62,10 +62,8 @@ class BottomNavBar extends ConsumerWidget {
 
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
-    final username =
-        GoRouterState.of(context).pathParameters['username'] ?? 'Guest';
 
-    if (location == "/home/$username") return 0;
+    if (location == "/home") return 0;
     if (location == "/messages") return 1;
     if (location == "/profile") return 2;
     return 0;

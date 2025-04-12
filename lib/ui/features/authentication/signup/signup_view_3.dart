@@ -185,18 +185,6 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
 
                       onPressed: () async {
                         if (submitForm()) {
-                          String username = ref.watch(signupProvider).username;
-                          // String password = ref.watch(signupProvider).password;
-                          // String gender = ref.watch(signupProvider).gender;
-                          // String hospital =
-                          //     ref.watch(signupProvider).hospitalInstance;
-                          // String role = ref.watch(signupProvider).role;
-                          // DateTime? bod = ref.watch(signupProvider).dob;
-                          // print(bod.toString());
-                          // print(gender);
-                          // print(hospital);
-                          // print(role);
-
                           final notifier = ref.read(signupProvider.notifier);
                           String? errorMessage = await notifier.signUp();
 
@@ -205,7 +193,8 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Sign-up successful!')),
                             );
-                            context.go("/home/$username"); // Navigate to home
+
+                            context.go("/home"); // Navigate to home
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(errorMessage)),
