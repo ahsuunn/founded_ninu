@@ -9,7 +9,7 @@ final userLocationStreamProvider = StreamProvider<Position>((ref) {
   return Geolocator.getPositionStream(
     locationSettings: LocationSettings(
       accuracy: LocationAccuracy.best,
-      distanceFilter: 10, // Update every 10 meters
+      distanceFilter: 5, // Update every 10 meters
     ),
   );
 });

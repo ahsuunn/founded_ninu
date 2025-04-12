@@ -172,7 +172,7 @@ final currentPositionProvider = StateProvider<LatLng?>((ref) => null);
 
 // Mock UI widget for controlling the test
 class MockLocationTester extends StatelessWidget {
-  const MockLocationTester({Key? key}) : super(key: key);
+  const MockLocationTester({super.key});
 
   @override
   Widget build(BuildContext context) {

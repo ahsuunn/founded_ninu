@@ -70,7 +70,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
 
             final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
-            print(distance);
+            print("DISTANCE: $distance");
             if (distance < 10) {
               if (!ref.read(hasArrivedProvider)) {
                 if (ref.watch(activeBottomSheetProvider) !=
