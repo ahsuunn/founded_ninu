@@ -147,9 +147,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 title: "Video Call Assistance",
                               ),
                               SizedBox(height: 10),
-                              VideocallContainer(),
-
-                              // Add more widgets here
+                              GestureDetector(
+                                onTap: () => context.push('/videocall'),
+                                child: VideocallContainer(),
+                              ),
                             ],
                           ),
                         ),

@@ -38,35 +38,6 @@ class MapFloatingButtons extends ConsumerWidget {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom:
-                  (activeBottomSheet != ActiveBottomSheet.none)
-                      ? (activeBottomSheet != ActiveBottomSheet.secondStart)
-                          ? 320
-                          : 400
-                      : 130,
-              right: 20,
-            ),
-            child: FloatingActionButton(
-              heroTag: "fab1",
-              onPressed: () {
-                final destination = ref.read(selectedDestinationProvider);
-                if (destination != null) {
-                  ref
-                      .read(locationProvider.notifier)
-                      .setMockPositionToDestination(destination);
-                  // print("CHANGE ARRIVED");
-                  print(destination);
-                  print(ref.watch(locationProvider));
-                }
-              },
-              child: const Icon(Icons.temple_hindu),
-            ),
-          ),
-        ),
 
         // Motorcycle Button
         (activeBottomSheet == ActiveBottomSheet.hospital)

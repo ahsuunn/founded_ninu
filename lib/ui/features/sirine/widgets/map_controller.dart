@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/domain/entities/hospital_info.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/bottomsheet_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/hospitalname_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/marker_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
@@ -108,6 +109,7 @@ class MapController {
           ref.read(selectedDestinationInfoProvider.notifier).state = info;
           //Notify which marker is chosen
           ref.read(selectedMarkerIdProvider.notifier).state = placeId;
+          ref.read(selectedHospitalNameProvider.notifier).state = hospitalName;
           //Current Travel State
           final currentMode = ref.read(travelStateModeProvider);
 

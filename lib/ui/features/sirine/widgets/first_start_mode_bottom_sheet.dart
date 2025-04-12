@@ -162,7 +162,7 @@ class _FirstStartModeBottomSheetState
                             backgroundColor: colorScheme.tertiary,
                           ),
                           LargeIconButton(
-                            onPressed: (() => context.pop()),
+                            onPressed: (() => context.push('/videocall')),
                             icon: Icon(
                               Icons.videocam_sharp,
                               size: 40,
