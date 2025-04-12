@@ -7,7 +7,11 @@ import 'package:founded_ninu/ui/features/sirine/provider/cancel_confirmation_pro
 import 'package:founded_ninu/ui/features/sirine/provider/has_arrived_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/loading_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_initial_position_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/locked_starttime_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/overlay_prompt_provider.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/travel_state_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/arrival_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/cancel_confirmation.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/map_appbar.dart';
@@ -69,16 +73,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             print(distance);
             if (distance < 10) {
               if (!ref.read(hasArrivedProvider)) {
-                hasArrivedNotifier.state = true; // Just arrived
                 if (ref.watch(activeBottomSheetProvider) !=
                     ActiveBottomSheet.none) {
-                  context.pop();
+                  context.canPop();
                 }
+                ref.read(travelStateModeProvider.notifier).state =
+                    TravelStateMode.defaultMode;
+                ref.read(lockedDestinationProvider.notifier).state = null;
+                ref.read(selectedDestinationProvider.notifier).state = null;
+                ref.read(lockedInitialPositionProvider.notifier).state = null;
+                ref.read(lockedStartTimeProvider.notifier).state = null;
+                ref.read(routePolylineProvider.notifier).state = {};
                 showBottomSheet(
                   context: context,
                   builder: (context) => ArrivalBottomSheet(),
                 );
                 debugPrint("🚀 User has arrived at destination!");
+                hasArrivedNotifier.state = true; // Just arrived
               }
             } else {
               if (ref.read(hasArrivedProvider)) {

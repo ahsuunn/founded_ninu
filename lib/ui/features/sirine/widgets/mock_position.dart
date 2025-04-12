@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/location_stream_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -239,30 +240,4 @@ class MockLocationTester extends StatelessWidget {
       },
     );
   }
-}
-
-// These providers are assumed to exist in your app
-// You would need to ensure they match your actual providers
-final selectedDestinationProvider = StateProvider<LatLng?>((ref) => null);
-final hasArrivedProvider = StateProvider<bool>((ref) => false);
-final travelStateModeProvider = StateProvider<TravelStateMode>(
-  (ref) => TravelStateMode.defaultMode,
-);
-final lockedDestinationProvider = StateProvider<LatLng?>((ref) => null);
-final lockedInitialPositionProvider = StateProvider<LatLng?>((ref) => null);
-final lockedStartTimeProvider = StateProvider<DateTime?>((ref) => null);
-final routePolylineProvider = StateProvider<Map<String, dynamic>>((ref) => {});
-final travelModeProvider = StateProvider<String>((ref) => 'driving');
-final selectedDestinationInfoProvider = StateProvider<DestinationInfo?>(
-  (ref) => null,
-);
-
-// Placeholder classes that should match your actual implementation
-enum TravelStateMode { defaultMode, navigating }
-
-class DestinationInfo {
-  final String distance;
-  final String duration;
-
-  DestinationInfo({required this.distance, required this.duration});
 }

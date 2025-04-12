@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/features/sirine/provider/hospitalname_provider.dart';
 
 class ArrivalBottomSheet extends ConsumerWidget {
   const ArrivalBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hospitalName = ref.watch(selectedHospitalNameProvider);
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
@@ -24,9 +26,19 @@ class ArrivalBottomSheet extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  "Anda telah sampai di tujuan.",
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      "Anda telah sampai di ${hospitalName ?? "tujuan..."}",
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
