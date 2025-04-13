@@ -17,7 +17,7 @@ class _VideoCallPageState extends ConsumerState<VideoCallPage> {
   @override
   void initState() {
     super.initState();
-    // Delay 2 detik untuk simulasi "Calling..."
+    // Delay 3 detik untuk simulasi "Calling.."
     Timer(const Duration(seconds: 3), () {
       if (!mounted) return;
       setState(() {

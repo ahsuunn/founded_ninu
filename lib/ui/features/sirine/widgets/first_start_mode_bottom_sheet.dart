@@ -13,7 +13,6 @@ import 'package:founded_ninu/ui/features/sirine/provider/locked_destination_prov
 import 'package:founded_ninu/ui/features/sirine/provider/locked_initial_position_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/locked_starttime_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/scaffold_provider.dart';
-import 'package:founded_ninu/ui/features/sirine/widgets/arrival_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/large_button_icons.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/second_start_mode_bottom_sheet.dart';
 import 'package:founded_ninu/ui/features/sirine/widgets/timeline_widget.dart';
@@ -178,39 +177,6 @@ class _FirstStartModeBottomSheetState
                               ),
                             ),
                             backgroundColor: Color(0xFFFAC068),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              SchedulerBinding.instance.addPostFrameCallback((
-                                _,
-                              ) {
-                                final container = ProviderScope.containerOf(
-                                  context,
-                                  listen: false,
-                                );
-
-                                container
-                                    .read(activeBottomSheetProvider.notifier)
-                                    .state = ActiveBottomSheet.secondStart;
-                                final scaffoldKey = container.read(
-                                  scaffoldKeyProvider,
-                                );
-                                scaffoldKey.currentState
-                                    ?.showBottomSheet(
-                                      (context) => ArrivalBottomSheet(),
-                                      backgroundColor: colorScheme.primary,
-                                    )
-                                    .closed
-                                    .then((_) {
-                                      container
-                                          .read(
-                                            activeBottomSheetProvider.notifier,
-                                          )
-                                          .state = ActiveBottomSheet.none;
-                                    });
-                              });
-                            },
-                            icon: Icon(Icons.abc_outlined),
                           ),
                         ],
                       ),
