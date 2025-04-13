@@ -45,6 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = ref.watch(scaffoldKeyProvider);
+
     if (!_hasListened) {
       _hasListened = true;
 
@@ -59,7 +60,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           final chosenDestination = ref.read(selectedDestinationProvider);
 
-          // 🔹 Check arrival
           if (chosenDestination != null) {
             final distance = Geolocator.distanceBetween(
               newLocation.latitude,
@@ -69,34 +69,37 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             );
 
             final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
-            if (distance < 10) {
-              if (!ref.read(hasArrivedProvider)) {
+            if (distance < 100) {
+              if (!ref.watch(hasArrivedProvider)) {
                 if (ref.watch(activeBottomSheetProvider) !=
                     ActiveBottomSheet.none) {
-                  context.canPop();
+                  if (context.canPop()) {
+                    context.pop();
+                  }
                 }
-                ref.read(travelStateModeProvider.notifier).state =
-                    TravelStateMode.defaultMode;
-                ref.read(lockedDestinationProvider.notifier).state = null;
-                ref.read(selectedDestinationProvider.notifier).state = null;
-                ref.read(lockedInitialPositionProvider.notifier).state = null;
-                ref.read(lockedStartTimeProvider.notifier).state = null;
-                ref.read(routePolylineProvider.notifier).state = {};
-                showBottomSheet(
+
+                showModalBottomSheet(
                   context: context,
                   builder: (context) => ArrivalBottomSheet(),
-                );
-                debugPrint("🚀 User has arrived at destination!");
-                hasArrivedNotifier.state = true; // Just arrived
+                  isDismissible: false,
+                ).then((_) {
+                  ref.read(travelStateModeProvider.notifier).state =
+                      TravelStateMode.defaultMode;
+                  ref.read(lockedDestinationProvider.notifier).state = null;
+                  ref.read(selectedDestinationProvider.notifier).state = null;
+                  ref.read(lockedInitialPositionProvider.notifier).state = null;
+                  ref.read(lockedStartTimeProvider.notifier).state = null;
+                  ref.read(routePolylineProvider.notifier).state = {};
+                  debugPrint("🚀 User has arrived at destination!");
+                  hasArrivedNotifier.state = true;
+                });
               }
             } else {
               if (ref.read(hasArrivedProvider)) {
-                hasArrivedNotifier.state = false; // No longer at destination
+                hasArrivedNotifier.state = false;
               }
             }
           }
-
-          //Update Polyline
           if (chosenDestination != null) {
             updateRoutePolyline(ref, newLocation, chosenDestination);
           }
