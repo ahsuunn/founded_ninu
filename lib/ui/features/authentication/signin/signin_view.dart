@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/auth_provider.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/signin_textfield.dart';
 import 'package:founded_ninu/ui/features/authentication/widgets/rowlogo.dart';
@@ -93,6 +94,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                           );
                           if (submitForm()) {
                             if (result == "Success" && context.mounted) {
+                              ref.invalidate(userProvider);
+                              Future.delayed(const Duration(milliseconds: 100));
                               context.go('/home');
                             } else {
                               if (context.mounted) {
