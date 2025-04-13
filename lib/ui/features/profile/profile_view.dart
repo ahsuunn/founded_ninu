@@ -16,35 +16,31 @@ class ProfilePage extends ConsumerWidget {
       child: userAsync.when(
         data: (user) {
           if (user == null) {
-            return const Center(child: Text("User Not Found"));
+            return const Center(child: CircularProgressIndicator());
           }
-
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // AppBar custom
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_rounded,
-                          color: Colors.black,
-                        ),
-                        onPressed: () => context.go('/home'),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Colors.black,
                       ),
-                      const Text(
-                        'My Profile',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      onPressed: () => context.go('/home'),
+                    ),
+                    const Text(
+                      'My Profile',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
 
                 // Card Profile

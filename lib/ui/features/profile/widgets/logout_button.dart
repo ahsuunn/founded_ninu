@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:founded_ninu/data/services/auth_provider.dart';
+import 'package:founded_ninu/data/services/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:founded_ninu/ui/core/themes.dart';
 
@@ -24,6 +25,7 @@ class LogoutButton extends ConsumerWidget {
         onTap: () async {
           final authService = ref.read(authServiceProvider);
           await authService.signOut();
+          ref.invalidate(userProvider);
           if (context.mounted) {
             context.go('/signin');
           }

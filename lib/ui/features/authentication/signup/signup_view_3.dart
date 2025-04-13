@@ -193,7 +193,7 @@ class _ThirdSignupPageState extends ConsumerState<ThirdSignupPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Sign-up successful!')),
                             );
-
+                            Future.delayed(const Duration(milliseconds: 100));
                             context.go("/home"); // Navigate to home
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
