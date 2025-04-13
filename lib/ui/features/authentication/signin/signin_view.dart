@@ -95,7 +95,15 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                           if (submitForm()) {
                             if (result == "Success" && context.mounted) {
                               ref.invalidate(userProvider);
-                              Future.delayed(const Duration(milliseconds: 100));
+                              Future.microtask(() async {
+                                while (ref.read(userProvider).asData?.value ==
+                                    null) {
+                                  await Future.delayed(
+                                    const Duration(milliseconds: 100),
+                                  );
+                                }
+                              });
+
                               context.go('/home');
                             } else {
                               if (context.mounted) {

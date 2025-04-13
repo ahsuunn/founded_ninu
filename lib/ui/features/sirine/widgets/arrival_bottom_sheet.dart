@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:founded_ninu/ui/core/themes.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/hospitalname_provider.dart';
 import 'package:founded_ninu/ui/features/sirine/provider/selected_hospital_address_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,13 @@ class ArrivalBottomSheet extends ConsumerWidget {
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+          color: colorScheme.primary,
+        ),
         padding: EdgeInsets.all(20),
         child: Stack(
           children: [

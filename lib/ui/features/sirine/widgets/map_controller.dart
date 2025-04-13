@@ -36,8 +36,7 @@ class MapController {
   }
 
   Future<void> _getUserLocation(WidgetRef ref) async {
-    final markers = ref.read(markersProvider.notifier); //Trigger rebuild
-    final markerSet = ref.read(markersProvider); //Adds marker
+    final markersNotifier = ref.read(markersProvider.notifier);
 
     try {
       final position = await LocationService().getCurrentLocation();
@@ -49,15 +48,17 @@ class MapController {
 
       currentPosition = LatLng(position.latitude, position.longitude);
       moveToCurrentLocation();
-      markerSet.add(
-        Marker(
-          markerId: const MarkerId("Current Location"),
-          position: currentPosition,
-          icon: customIcon,
-          infoWindow: const InfoWindow(title: "Your Current Location"),
-        ),
+
+      // Clear all previous markers first
+      final newMarker = Marker(
+        markerId: const MarkerId("Current Location"),
+        position: currentPosition,
+        icon: customIcon,
+        infoWindow: const InfoWindow(title: "Your Current Location"),
       );
-      markers.state = {...markerSet};
+
+      // Set only the new marker
+      markersNotifier.state = {newMarker};
 
       await _fetchHospitalsMarker(ref);
     } catch (e) {
@@ -204,7 +205,6 @@ class MapController {
       markerSet.add(marker);
       markers.state = {...markerSet};
     }
-    markers.state = {...markerSet};
   }
 
   void moveToCurrentLocation() {
