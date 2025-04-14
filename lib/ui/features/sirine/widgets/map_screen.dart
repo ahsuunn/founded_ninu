@@ -35,7 +35,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   final mapController = MapController();
   LatLng _lastLocation = const LatLng(0, 0);
   bool _hasListened = false; // ensure only listens once
-
+  bool _hasArrived = false;
   @override
   void initState() {
     super.initState();
@@ -70,15 +70,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
             final hasArrivedNotifier = ref.read(hasArrivedProvider.notifier);
             if (distance < 100) {
-              if (!ref.read(hasArrivedProvider)) {
+              if (!_hasArrived) {
                 if (ref.read(activeBottomSheetProvider) !=
                     ActiveBottomSheet.none) {
                   if (context.canPop()) {
                     context.pop();
                   }
                 }
-
-                hasArrivedNotifier.state = true;
+                _hasArrived = true;
                 showModalBottomSheet(
                   context: context,
                   builder: (context) => ArrivalBottomSheet(),
@@ -92,7 +91,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ref.read(lockedStartTimeProvider.notifier).state = null;
                   ref.read(routePolylineProvider.notifier).state = {};
                   debugPrint("🚀 User has arrived at destination!");
-                  hasArrivedNotifier.state = false;
+                  hasArrivedNotifier.state = true;
+                  _hasArrived = false;
                 });
               }
             } else {
