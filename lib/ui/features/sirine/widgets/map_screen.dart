@@ -78,6 +78,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   }
                 }
 
+                hasArrivedNotifier.state = true;
                 showModalBottomSheet(
                   context: context,
                   builder: (context) => ArrivalBottomSheet(),
@@ -91,7 +92,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ref.read(lockedStartTimeProvider.notifier).state = null;
                   ref.read(routePolylineProvider.notifier).state = {};
                   debugPrint("🚀 User has arrived at destination!");
-                  hasArrivedNotifier.state = true;
+                  hasArrivedNotifier.state = false;
                 });
               }
             } else {
