@@ -1,16 +1,15 @@
-# founded_ninu
+# 🚑 Ninu - Portable Ambulance
 
-A new Flutter project.
+## 👥 Team Name: **Founded_Ninu**
 
-## Getting Started
+### 👤 Team Members:
+- Ahsan Malik Al Farisi
+- Muhammad Azzam Robbani
+- Roihan M. Iqbal
 
-This project is a starting point for a Flutter application.
+**Ninu** adalah inovasi layanan ambulans portabel berbasis Internet of Things (IoT) pertama di Indonesia, yang dikembangkan untuk meningkatkan kualitas layanan prehospital di Tanah Air. Dengan memanfaatkan teknologi geofencing, Ninu mampu mengirimkan notifikasi darurat secara real-time kepada pengguna jalan di sekitar lokasi kejadian, mempercepat proses evakuasi dan akses ke fasilitas kesehatan.
 
-A few resources to get you started if this is your first Flutter project:
+Ninu juga dilengkapi dengan fitur video call panduan pertolongan pertama, sirine portabel inovatif, serta materi edukasi kesehatan prehospital yang terintegrasi dalam aplikasinya. Seluruh sistem ini dirancang untuk memastikan bantuan medis awal dapat dilakukan secara cepat dan akurat, bahkan sebelum ambulans konvensional tiba di lokasi.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## How To Use
+MVP Ninu merupakan sebuah aplikasi Android dalam bentuk .apk yang dapat didownload di bagian release. Download aplikasi dan daftarkan akun untuk menggunkaan Ninu. Sign in dan langsung pakailah aplikasi Ninu.
